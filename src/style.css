@@ -1,0 +1,258 @@
+/* 視覺取材自作業簿：米色紙、淡藍格線、鉛筆灰、老師的紅筆、貼紙的金 */
+:root{
+  --paper:#FAF7F0; --surface:#FFFFFF; --sunken:#F0EBE0;
+  --ink:#2B2621; --muted:#7A7064; --line:#DED5C6;
+  --rule:#B9CFE4; --red:#C94F43; --red-soft:#F7E4E1;
+  --gold:#DFA52C; --green:#3B8F63; --green-soft:#E0F0E7;
+  --shadow:0 1px 2px rgba(43,38,33,.05), 0 10px 24px -14px rgba(43,38,33,.3);
+  --display:'Fredoka',var(--cjk);
+  --cjk:'PingFang TC','Noto Sans CJK TC','Noto Sans TC','Microsoft JhengHei',sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,'Segoe UI',var(--cjk);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light dark;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161310; --surface:#221D18; --sunken:#1C1814;
+    --ink:#EFE7DA; --muted:#A29584; --line:#39312A;
+    --rule:#3A4C5E; --red:#E8776A; --red-soft:#3A221F;
+    --gold:#EFC164; --green:#5FBE8A; --green-soft:#19301F;
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 28px -16px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161310; --surface:#221D18; --sunken:#1C1814;
+  --ink:#EFE7DA; --muted:#A29584; --line:#39312A;
+  --rule:#3A4C5E; --red:#E8776A; --red-soft:#3A221F;
+  --gold:#EFC164; --green:#5FBE8A; --green-soft:#19301F;
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 28px -16px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  -webkit-text-size-adjust:100%;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px;border-radius:8px}
+
+#app{min-height:100%;display:flex;flex-direction:column}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:10px;
+  padding:10px 16px;max-width:460px;width:100%;margin:0 auto;
+  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.bar .brand{font-family:var(--display);font-weight:600;font-size:17px;margin-right:auto}
+.iconbtn{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;font-size:19px;color:var(--muted)}
+.iconbtn:hover{background:var(--sunken);color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;
+  border:1px solid var(--line);background:var(--surface);white-space:nowrap;
+  font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+.page{flex:1;display:none;flex-direction:column;padding:0 16px;max-width:460px;width:100%;margin:0 auto}
+.page.on{display:flex}
+.pad{padding-block:18px 28px}
+h1{font-family:var(--display);font-weight:600;font-size:26px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:12.5px;margin:24px 0 10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted)}
+p.lede{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.75;max-width:44ch}
+
+/* ---- 科目選單：做成作業簿的分頁 ---- */
+.subjects{display:grid;gap:11px}
+.subj{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:16px;background:var(--surface);
+  border:1px solid var(--line);box-shadow:var(--shadow);text-align:left;width:100%;position:relative;
+  overflow:hidden;transition:transform .12s ease}
+.subj:active{transform:scale(.985)}
+.subj::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.subj .ic{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+  background:var(--sunken);font-family:var(--display);font-weight:600;font-size:21px;color:var(--c)}
+.subj .t{font-family:var(--display);font-weight:600;font-size:17px}
+.subj .d{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:2px}
+.subj .st{flex:none;text-align:right;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5}
+.subj .st b{display:block;font-size:17px;color:var(--ink);font-weight:600}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ghost{padding:13px;border-radius:14px;border:1px solid var(--line);font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:7px}
+.ghost:hover{background:var(--surface)}
+
+/* ---- 練習頁 ---- */
+#quiz{padding-block:10px 18px;gap:12px}
+/* 一題一格：未答是灰的，答對綠、答錯紅，一眼看得出這輪的狀況 */
+.pbar{height:6px;display:flex;gap:3px}
+.pbar i{flex:1;background:var(--line);border-radius:99px;transition:background .25s}
+.pbar i.ok{background:var(--green)}
+.pbar i.no{background:var(--red)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+  padding:20px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  flex:1 1 auto;min-height:160px;justify-content:center;
+  /* 作業簿的格線 */
+  background-image:linear-gradient(var(--rule) 1px,transparent 1px);
+  background-size:100% 30px;background-position:0 12px;background-blend-mode:normal}
+.ask{font-size:17px;font-weight:500;text-align:center;line-height:1.6;text-wrap:balance}
+.big{font-family:var(--display);font-weight:600;font-size:46px;letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;text-align:center;line-height:1.1}
+/* 直式注音：符號由上往下排，二三四聲標在最後一個符號右邊，輕聲的點標在最上面 */
+.zy{display:inline-flex;gap:.46em;align-items:flex-start;font-family:var(--cjk);justify-content:center}
+.zy .col{display:flex;flex-direction:column;align-items:center;gap:.14em}
+.zy .han{font-size:.6em;font-weight:600;line-height:1;color:var(--muted)}
+.syl{position:relative;display:flex;flex-direction:column;align-items:center;
+  line-height:1.02;padding-right:.52em;padding-top:.42em}
+.syl b{font-weight:400;display:block}
+/* 聲調改用 SVG 自己畫：字型裡的ˊˋ是修飾符號，實際墨水只佔字框一小角，
+   放大字級會連帶把定位弄歪。自己畫就能把筆畫長度、粗細、位置全部定死。 */
+.syl .tn{position:absolute;right:0;bottom:.04em;width:.46em;height:.74em;
+  fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.syl .tn.up{right:auto;left:50%;transform:translateX(-50%);top:0;bottom:auto;
+  width:.34em;height:.34em;stroke:none}
+.syl .tn .dot{fill:currentColor}
+.card .zy{font-size:40px}
+.card .sub{margin-top:-2px}
+.card .sub .zy{font-size:22px}
+.card .en{font-family:var(--display);font-size:44px;font-weight:600;letter-spacing:.01em}
+
+/* ---- 筆順描字 ---- */
+.tr{width:min(86vw,330px);height:min(86vw,330px);display:block;touch-action:none}
+.tg-box{fill:var(--surface);stroke:var(--line);stroke-width:4}
+.tg-line{stroke:var(--rule);stroke-width:3;stroke-dasharray:14 16;fill:none;opacity:.75}
+.st-ghost{fill:var(--ink);opacity:.1}
+.bg-ghost{fill:var(--ink);opacity:.13}
+.bg-solid{fill:var(--ink)}
+.inkdone{opacity:.75}
+.st-done{fill:var(--ink)}
+.st-cur{fill:var(--red);opacity:.22}
+.st-start{fill:var(--red);opacity:.9}
+.ink{fill:none;stroke:var(--red);stroke-width:34;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.trbar{display:flex;align-items:center;gap:10px;justify-content:center}
+.trbar .n{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.trbar button{padding:9px 16px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);font-size:13.5px}
+.trwhy{font-size:13.5px;color:var(--red);text-align:center;min-height:19px;line-height:1.5}
+
+/* ---- 視覺模型 ---- */
+.tf{width:min(62vw,230px);height:auto;display:block;margin:2px auto}
+.tf-c{fill:none;stroke:var(--line);stroke-width:3}
+.tf-d{fill:var(--red)}
+.tf-e{fill:none;stroke:var(--red);stroke-width:3;stroke-dasharray:5 5}
+.bd{width:min(60vw,210px);height:auto;display:block;margin:0 auto}
+.bd-l{stroke:var(--line);stroke-width:3}
+.bd-w{fill:var(--red-soft);stroke:var(--red);stroke-width:3}
+.bd-p{fill:var(--surface);stroke:var(--line);stroke-width:3}
+.bd-t{text-anchor:middle;font-family:var(--display);font-size:27px;font-weight:600;fill:var(--ink)}
+
+/* ---- 顏色 ---- */
+.chip-c{display:inline-block;width:var(--s);height:var(--s);border-radius:16px;background:var(--c);
+  border:2px solid color-mix(in srgb,var(--ink) 16%,transparent);vertical-align:middle}
+.mixrow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.mixop{font-family:var(--display);font-size:26px;font-weight:600;color:var(--muted)}
+.mixq{font-family:var(--display);font-size:42px;font-weight:600;color:var(--muted)}
+.ch .sw{display:block;width:60px;height:46px;border-radius:12px;
+  border:2px solid color-mix(in srgb,var(--ink) 16%,transparent)}
+/* 色階用拖曳排序：按住一格拖到另一格就互換 */
+.ramprow{display:grid;gap:7px;width:100%;max-width:350px;touch-action:none;margin:0 auto}
+.rampcell{height:96px;border-radius:14px;border:2px solid color-mix(in srgb,var(--ink) 14%,transparent);
+  position:relative;transition:transform .14s ease,box-shadow .14s ease;will-change:transform}
+.rampcell.over{box-shadow:0 0 0 4px var(--red)}
+.rampcell.lift{opacity:.25}
+.rampcell.bad{box-shadow:inset 0 0 0 5px var(--red)}
+.rampghost{position:fixed;z-index:90;pointer-events:none;border-radius:14px;
+  border:2px solid rgba(0,0,0,.2);box-shadow:0 12px 26px -8px rgba(0,0,0,.45);transform:scale(1.12)}
+.rampends{display:flex;justify-content:space-between;width:100%;max-width:350px;margin:6px auto 0;
+  font-size:12.5px;color:var(--muted)}
+
+/* ---- 圖形邏輯 ---- */
+.lg{display:inline-block;vertical-align:middle}
+.lgrow{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.lgq{font-family:var(--display);font-size:34px;font-weight:600;color:var(--muted);
+  width:44px;text-align:center}
+.lgmat{display:grid;grid-template-columns:repeat(2,64px);gap:10px;justify-content:center;
+  align-items:center;justify-items:center}
+.card .hintart{margin-top:2px}
+.ch .zy{font-size:25px}
+.ch .zy.n3{font-size:19px}
+.ch .zy.n4{font-size:16px}
+.ch .en{font-family:var(--display);font-size:24px;letter-spacing:.01em;word-break:break-all;line-height:1.15}
+.ch .en.big{font-size:40px}
+.ch .tag{display:block;font-size:11px;color:var(--muted);margin-top:4px;
+  font-family:var(--body);font-weight:400}
+/* 直式注音：一個字一欄，符號上下排，聲調掛在右側；輕聲的點在上方 */
+.zrow{display:flex;gap:30px;justify-content:center;align-items:flex-start}
+.zcol{position:relative;display:flex;flex-direction:column;align-items:center;
+  font-family:var(--cjk);font-size:32px;line-height:1.04;padding:0 .4em}
+.zcol i{font-style:normal}
+.zcol u{position:absolute;right:-.02em;bottom:.04em;text-decoration:none;font-size:.78em;line-height:1}
+.zcol u.lt{right:auto;left:50%;transform:translateX(-50%);bottom:auto;top:-.66em}
+.wordline{text-align:center;font-family:var(--cjk);font-size:31px;font-weight:600;letter-spacing:.08em}
+.enline{text-align:center;font-family:var(--display);font-size:19px;font-weight:600;
+  letter-spacing:.09em;color:var(--muted);margin-top:1px}
+.ch .zrow{gap:14px}
+.ch .zcol{font-size:25px;padding:0 .34em}
+.artimg{width:108px;height:108px;object-fit:contain;display:block}
+
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ch{min-height:76px;border-radius:16px;border:2px solid var(--line);background:var(--surface);
+  display:grid;place-items:center;padding:10px;font-family:var(--display);font-weight:600;font-size:28px;
+  font-variant-numeric:tabular-nums;transition:transform .12s ease,background .15s,border-color .15s}
+.ch .cjkbig{font-family:var(--cjk);font-size:34px;font-weight:600}
+.ch img{width:62px;height:62px;object-fit:contain}
+.ch:active{transform:scale(.97)}
+.ch.ok{background:var(--green-soft);border-color:var(--green);animation:pop .36s cubic-bezier(.3,1.5,.5,1)}
+.ch.no{background:var(--red-soft);border-color:var(--red);animation:shake .34s}
+.ch[disabled]{opacity:.45}
+.ch.ok[disabled],.ch.no[disabled]{opacity:1}
+@keyframes pop{0%{transform:scale(1)}42%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.ch.ok,.ch.no{animation:none}*{transition-duration:.01ms!important}}
+
+.hint{font-size:13.5px;color:var(--muted);line-height:1.7;text-align:center;padding:2px 4px;
+  background:var(--sunken);border-radius:12px;padding:10px 12px}
+.hint b{color:var(--ink);font-weight:600}
+
+/* ---- 診斷頁 ---- */
+.topic{padding:13px 0;border-bottom:1px solid var(--line)}
+.topic .hd{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+.topic .nm{font-size:14px;font-weight:500;margin-right:auto}
+.topic .pc{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.meter{height:7px;border-radius:99px;background:var(--sunken);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:99px;background:var(--green)}
+.topic .note{font-size:12.5px;color:var(--red);line-height:1.6;margin-top:7px}
+.topic .note.good{color:var(--green)}
+.empty{color:var(--muted);font-size:13.5px;line-height:1.85;padding:22px 0}
+.totals{display:flex;gap:10px;margin-bottom:6px}
+.tot{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.tot .k{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.tot .v{font-family:var(--display);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums}
+.tot .v small{font-size:12px;font-weight:400;color:var(--muted)}
+
+/* ---- 設定 ---- */
+.set{padding:14px 0;border-bottom:1px solid var(--line)}
+.set .lab{font-size:14px;font-weight:500;margin-bottom:3px}
+.set .sub{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{padding:9px 14px;border-radius:11px;border:1px solid var(--line);font-size:13.5px;background:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff;font-weight:500}
+details.note2{margin-top:24px;border-top:1px solid var(--line);padding-top:14px}
+details.note2 summary{font-size:13px;color:var(--muted);cursor:pointer;list-style:none}
+details.note2 summary::-webkit-details-marker{display:none}
+details.note2 summary::before{content:'▸ ';color:var(--red)}
+details.note2[open] summary::before{content:'▾ '}
+details.note2 .body{font-size:13px;line-height:1.85;color:var(--muted);margin-top:10px;max-width:44ch}
+details.note2 .body b{color:var(--ink);font-weight:500}
+details.note2 .body ul{margin:8px 0;padding-left:18px}
+
+/* ---- 覆蓋層 ---- */
+.sheet{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;
+  background:color-mix(in srgb,var(--paper) 84%,transparent);backdrop-filter:blur(6px)}
+.sheet .box{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+  padding:26px 22px;max-width:340px;width:100%;text-align:center}
+.sheet h3{font-family:var(--display);font-weight:600;font-size:22px;margin:0 0 6px}
+.sheet p{font-size:13.5px;color:var(--muted);line-height:1.75;margin:0}
+.stars{font-size:30px;letter-spacing:7px;margin:14px 0 2px;color:var(--gold)}
+.score{display:flex;gap:14px;justify-content:center;margin:16px 0 20px}
+.score .k{font-size:11px;color:var(--muted);letter-spacing:.05em}
+.score .v{font-family:var(--display);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums}
+.primary{width:100%;padding:14px;border-radius:14px;background:var(--red);color:#fff;font-weight:600;font-size:15.5px}
+.link{margin-top:10px;font-size:13.5px;color:var(--muted);width:100%;padding:9px}
+.restnum{font-family:var(--display);font-size:58px;font-weight:600;color:var(--red);
+  font-variant-numeric:tabular-nums;margin:10px 0}

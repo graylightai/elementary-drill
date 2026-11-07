@@ -47,33 +47,65 @@
 
 注音**全部做成視覺題，不需要任何聲音**——這樣離線百分之百可靠，也不依賴裝置有沒有裝中文語音包。
 
+## 開發
+
+需要 Node 22。
+
+```
+npm install
+npm run dev        # 本機開發，http://localhost:5173（不註冊 Service Worker，改了立刻看到）
+npm test           # 題庫安全網，見下
+npm run build      # 型別檢查 → 建置到 dist/ → 自動產生 dist/sw.js
+npm run preview    # 用建置後的版本測離線
+```
+
+推到 `main` 會由 GitHub Actions 跑測試、建置、發佈到 Pages。**測試沒過就不會發佈。**
+
 ## 檔案
 
 ```
-index.html      整個 app
-img/            129 張圖＋app 圖示（與目力練功房共用）
-strokes.json    212 個一年級常用字的筆順資料
-fonts/          自帶拉丁字體，中文走系統字體
-sw.js           Service Worker，負責離線
-build-sw.py     改完東西跑這支重新產生 sw.js
+index.html                 頁面骨架
+src/
+  main.ts                  啟動
+  types.ts                 題目、知識點、學習紀錄的型別
+  engine/                  間隔重複、本機儲存（不碰畫面）
+  ui/                      畫面：選擇題流程、拖曳、描字、首頁、診斷、設定
+    visuals/               十格板、直式注音、時鐘、字形等繪圖
+  content/                 題庫，一個科目一個資料夾
+    curriculum.json        108 課綱國小數學與國語學習內容＋前置關係
+    index.ts               首頁的科目清單
+public/                    原樣複製的檔案：圖、字型、筆順資料、manifest
+tests/
+  legacy-keys.json         改版前的 1211 個知識點 key（學習紀錄的基準）
+  content.test.ts
+scripts/build-sw.mjs       依建置結果產生 Service Worker
 ```
+
+### 每個知識點都標了課綱代碼
+
+```ts
+{ k: 'm.c.7+8', g: '進位加法', subj: 'math', cur: ['N-1-3'], make: () => ({ ... }) }
+```
+
+`k` 是學習紀錄的 key，**上線後不能改**，改了那一題的舊進度就消失。
+`cur` 對應 `src/content/curriculum.json` 裡的代碼，之後的知識地圖、往回補前置知識都靠它。
+
+### 測試在擋什麼
+
+- 改版前的 1211 個 key 一個都不能少，科目與細項名稱不能變（不然舊進度會掉）
+- 每個出題函式跑 30 次：選擇題剛好一個正解、選項不重複
+- 數學、注音、國字、時鐘的題目一定要標課綱代碼，而且代碼要真的存在
 
 ## 離線
 
-連著網路開一次，Service Worker 會把 138 個檔案（約 1.1 MB，含筆順資料）全部抓進快取。之後從主畫面點開完全不需要網路。
+連著網路開一次，Service Worker 會把 140 個檔案（約 1.1 MB，含筆順資料）全部抓進快取。之後從主畫面點開完全不需要網路。
 
-> 改過 `index.html` 或 `img/` 之後**一定要跑 `python3 build-sw.py` 再 commit**，
-> 否則已經裝在主畫面的 app 會一直吃舊快取。
-
-本機測試要起伺服器（`file://` 下 Service Worker 不會註冊）：
-
-```
-python3 -m http.server 8000
-```
+`sw.js` 由 `npm run build` 自動產生，版本字串取自所有檔案內容的雜湊——
+以前要手動跑 `build-sw.py`，忘了跑主畫面上的 app 就一直吃舊快取，現在不會了。
 
 ## 筆順描字
 
-`strokes.json`（435 KB）是從 Make Me a Hanzi 的 `graphics.txt`（30 MB、9574 字）裁出來的
+`public/strokes.json`（435 KB）是從 Make Me a Hanzi 的 `graphics.txt`（30 MB、9574 字）裁出來的
 212 個一年級常用字，含每一筆的輪廓路徑與中線。
 
 - 田字格 + 整字淡底，當前筆畫紅色高亮、起筆位置有紅點
@@ -123,12 +155,15 @@ Make Me a Hanzi 只收漢字，**37 個注音符號一個都沒有**（已查證
 
 ## 授權
 
-`img/` 的圖案來自 Google [Noto Emoji](https://github.com/googlefonts/noto-emoji)，Apache License 2.0。
-`fonts/` 的 Fredoka 與 IBM Plex Mono 來自 Google Fonts，SIL Open Font License 1.1。
-`index.html` 內嵌的注音字形輪廓取自 **Noto Sans TC**，SIL Open Font License 1.1。
-`strokes.json` 衍生自 [Make Me a Hanzi](https://github.com/skishore/makemeahanzi)，
+`public/img/` 的圖案來自 Google [Noto Emoji](https://github.com/googlefonts/noto-emoji)，Apache License 2.0。
+`public/fonts/` 的 Fredoka 與 IBM Plex Mono 來自 Google Fonts，SIL Open Font License 1.1。
+`src/ui/visuals/bopo-glyphs.ts` 的注音字形輪廓取自 **Noto Sans TC**，SIL Open Font License 1.1。
+`public/strokes.json` 衍生自 [Make Me a Hanzi](https://github.com/skishore/makemeahanzi)，
 其字形資料源自 Arphic Technology 的楷體，採 **ARPHIC PUBLIC LICENSE**——
-散布時必須保留該授權聲明與來源標示。
+散布時必須保留該授權聲明與來源標示（`public/LICENSE-strokes.txt`，會隨建置一起發佈）。
+
+`src/content/curriculum.json` 的條目文字取自國家教育研究院公布的 108 課綱（數學領域、國語文），
+由 PDF 表格自動抽出；其中的數學「主軸」分組與標 `why: "axis"` 的前置關係是推定，標 `curriculum` 的才是課綱備註明列。
 
 ## 眼睛
 
