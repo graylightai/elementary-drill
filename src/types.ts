@@ -31,6 +31,8 @@ export interface ChoiceQuestion {
   choices: Choice[];
   hint?: string;
   hintArt?: string;
+  /** 答錯時緊接著先練的基礎題（知識點 key），例如應用題錯了就先練那個加減事實 */
+  remedial?: string[];
 }
 
 /** 拖曳排序（色階） */

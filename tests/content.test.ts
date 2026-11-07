@@ -60,8 +60,45 @@ describe('出題', () => {
   });
 });
 
+describe('往回補', () => {
+  it('答錯時要先練的基礎題，key 都真的存在', () => {
+    const bad: string[] = [];
+    for (const it of items()) for (let r = 0; r < 40; r++) {
+      const q = it.make();
+      if (q.kind) break;
+      for (const k of q.remedial || []) if (!ALL[k]) bad.push(`${it.k} → ${k}`);
+    }
+    expect([...new Set(bad)]).toEqual([]);
+  });
+
+  it('應用題每一題都找得到對應的算式題', () => {
+    const miss: string[] = [];
+    for (const it of items().filter(i => i.k.startsWith('wp.'))) for (let r = 0; r < 60; r++) {
+      const q = it.make();
+      if (!q.kind && !q.remedial?.length) { miss.push(`${it.k}: ${q.ask}`); break; }
+    }
+    expect(miss).toEqual([]);
+  });
+
+  it('應用題的答案跟題目敘述算得起來', () => {
+    for (const it of items().filter(i => i.k.startsWith('wp.'))) for (let r = 0; r < 60; r++) {
+      const q = it.make();
+      if (q.kind) continue;
+      const [a, b] = (q.ask!.match(/\d+/g) || []).map(Number);
+      const ans = Number(q.choices.find(c => c.ok)!.t);
+      const kind = it.k.split('.')[1];
+      expect(kind === 'add' || kind === 'join' ? a + b : a - b, `${it.k}: ${q.ask}`).toBe(ans);
+    }
+  });
+});
+
 describe('課綱對應', () => {
   const codes = new Set((curriculum as { nodes: { code: string }[] }).nodes.map(n => n.code));
+
+  it('影片對應的課綱代碼都存在', async () => {
+    const { VIDEOS } = await import('../src/content/videos');
+    expect(Object.keys(VIDEOS).filter(c => !codes.has(c))).toEqual([]);
+  });
 
   it('標的課綱代碼都存在', () => {
     const bad = items().flatMap(it => it.cur.filter(c => !codes.has(c)).map(c => `${it.k}: ${c}`));
@@ -69,7 +106,7 @@ describe('課綱對應', () => {
   });
 
   it('數學、注音、國字、時鐘的題目都有標課綱', () => {
-    const untagged = items().filter(it => ['math', 'bopo', 'bopow', 'hanzi', 'clock'].includes(it.subj) && !it.cur.length);
+    const untagged = items().filter(it => ['math', 'money', 'bopo', 'bopow', 'hanzi', 'clock'].includes(it.subj) && !it.cur.length);
     expect(untagged.map(i => i.k)).toEqual([]);
   });
 });

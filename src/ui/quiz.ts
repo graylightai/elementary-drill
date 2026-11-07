@@ -1,6 +1,7 @@
 /* 一輪練習的流程：出題 → 作答 → 結算 */
 import type { Item, ChoiceQuestion } from '../types';
-import { SUBJECTS } from '../content';
+import { SUBJECTS, ALL } from '../content';
+import { videosFor } from '../content/videos';
 import { buildSession, grade, today } from '../engine/srs';
 import { S, load, save } from '../engine/store';
 import { $, el, sheet, closeSheet } from './dom';
@@ -20,6 +21,8 @@ export interface Session {
   extra: number;
   t0: number;
   marks: ('ok' | 'no')[];
+  /** 第幾題是因為答錯而插進來的基礎題 */
+  remedial: Set<number>;
 }
 export let session: Session | null = null;
 let tick: ReturnType<typeof setInterval> | undefined;
@@ -33,7 +36,7 @@ export function start(subjId: string): void {
   const subj = SUBJECTS.find(s => s.id === subjId)!;
   const q = buildSession(subj.items, S.len);
   if (!q.length) return;
-  session = { subj: subjId, list: q, i: 0, ok: 0, bad: 0, extra: 0, t0: performance.now(), marks: [] };
+  session = { subj: subjId, list: q, i: 0, ok: 0, bad: 0, extra: 0, t0: performance.now(), marks: [], remedial: new Set() };
   show('quiz');
   stopTimer();
   tick = setInterval(() => {
@@ -57,8 +60,30 @@ export function settle(item: Item, pass: boolean, ms: number): void {
   grade(item.k, pass, ms);
   if (pass) s.ok++; else s.bad++;
   s.marks[s.i] = pass ? 'ok' : 'no';
-  if (!pass && s.extra < 3) { s.extra++; s.list.splice(Math.min(s.i + 3, s.list.length), 0, item); }
+  if (!pass && s.extra < 3) {
+    s.extra++;
+    const at = Math.min(s.i + 3, s.list.length);
+    s.list.splice(at, 0, item);
+    s.remedial = new Set([...s.remedial].map(i => i >= at ? i + 1 : i));
+  }
   drawBar();
+}
+
+/** 答錯後往回補：把基礎題插在下一題，畫面上會標「先練基礎」。跟補題共用每輪最多 3 題的上限 */
+function insertRemedial(keys: string[] | undefined): string[] {
+  const s = session!, added: string[] = [];
+  for (const k of keys || []) {
+    const it = ALL[k];
+    if (!it || s.extra >= 3) continue;
+    s.extra++;
+    const at = s.i + 1 + added.length;
+    s.list.splice(at, 0, it);
+    // 插進來之後，後面已標記的位置要跟著往後挪
+    s.remedial = new Set([...s.remedial].map(i => i >= at ? i + 1 : i)); s.remedial.add(at);
+    added.push(k);
+  }
+  if (added.length) drawBar();
+  return added;
 }
 
 export function next(): void { session!.i++; render(); }
@@ -80,6 +105,7 @@ function renderChoice(item: Item, q: ChoiceQuestion): void {
   const card = $('#card'); card.replaceChildren();
   const add = (cls: string, html: string) => { const d = el('div', cls); d.innerHTML = html; card.append(d); return d; };
 
+  if (session!.remedial.has(session!.i)) add('remedial', '先練基礎：把這一題練熟，剛剛那題就會了');
   if (q.ask) add('ask', q.ask);
   if (q.img) { const i = el('img', 'artimg'); i.src = `img/${q.img}.png`; i.alt = ''; card.append(i); }
   if (q.svg) add('', q.svg);
@@ -120,11 +146,21 @@ function renderChoice(item: Item, q: ChoiceQuestion): void {
         b.classList.add('no');
         [...ch.children].forEach((x, i) => { if (q.choices[i].ok) x.classList.add('ok'); });
         sfx.bad();
+        const back = insertRemedial(q.remedial);
         if (S.hint && (q.hint || q.hintArt)) {
           const h = el('div', 'hint');
-          h.innerHTML = (q.hintArt ? `<div class="hintart">${q.hintArt}</div>` : '') + (q.hint || '');
+          h.innerHTML = (q.hintArt ? `<div class="hintart">${q.hintArt}</div>` : '') + (q.hint || '') +
+            (back.length ? `<div class="hintnext">下一題先練基礎。</div>` : '');
           $('#feedback').append(h);
         }
+        // 有網路才給影片連結（離線點了也打不開）
+        const vids = navigator.onLine ? videosFor(item.cur) : [];
+        vids.forEach(v => {
+          const a = el('a', 'vid');
+          a.href = v.url; a.target = '_blank'; a.rel = 'noopener';
+          a.innerHTML = `<span class="play">▶</span><span>看講解影片：${v.title}<small>${v.source}・開新視窗</small></span>`;
+          $('#feedback').append(a);
+        });
         const go = el('button', 'primary'); go.textContent = '知道了，下一題';
         go.style.marginTop = '10px'; go.onclick = next; $('#feedback').append(go);
       }

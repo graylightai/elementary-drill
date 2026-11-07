@@ -256,3 +256,16 @@ details.note2 .body ul{margin:8px 0;padding-left:18px}
 .link{margin-top:10px;font-size:13.5px;color:var(--muted);width:100%;padding:9px}
 .restnum{font-family:var(--display);font-size:58px;font-weight:600;color:var(--red);
   font-variant-numeric:tabular-nums;margin:10px 0}
+
+/* ---- 錢幣 ---- */
+.purse{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;max-width:320px;margin:0 auto}
+.purse .coin{flex:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+.ch .purse{gap:3px;max-width:100%}
+
+/* ---- 往回補、影片連結 ---- */
+.remedial{font-size:.82rem;color:var(--red);background:var(--red-soft);border-radius:999px;padding:4px 12px;margin-bottom:8px;font-weight:700}
+.hintnext{margin-top:8px;font-weight:700;color:var(--red)}
+.vid{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;border:1px solid var(--line);
+  border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;line-height:1.35}
+.vid .play{flex:none;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:.8rem}
+.vid small{display:block;color:var(--muted);font-size:.78rem}

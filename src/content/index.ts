@@ -1,6 +1,8 @@
 /* 科目清單（首頁那幾格）。新增題庫：在對應資料夾加檔案，再掛到這裡。 */
 import type { Item, Subject } from '../types';
 import { MATH } from './math/g1';
+import { WORD_PROBLEMS } from './math/word';
+import { MONEY } from './math/money';
 import { BOPO, BOPOW } from './zh/bopo';
 import { HANZI, buildHanziItems } from './zh/hanzi';
 import { CLOCK } from './clock/clock';
@@ -10,7 +12,8 @@ import { LOGIC } from './logic/logic';
 import type { StrokeData } from '../ui/visuals/glyph';
 
 export const SUBJECTS: Subject[] = [
-  { id: 'math',  name: '數學',     ic: '＋', c: '#C94F43', d: '湊十、20 以內加減、進位退位、比大小', items: MATH },
+  { id: 'math',  name: '數學',     ic: '＋', c: '#C94F43', d: '湊十、20 以內加減、進位退位、應用題', items: [...MATH, ...WORD_PROBLEMS] },
+  { id: 'money', name: '錢幣',     ic: '元', c: '#B5852A', d: '認錢幣、數錢、換錢、付錢、找錢', items: MONEY },
   { id: 'bopo',  name: '注音',     ic: 'ㄅ', c: '#3B7FB5', d: '拼讀、聲調、形近符號辨別', items: BOPO },
   { id: 'bopow', name: '注音描寫', ic: 'ㄅ', c: '#2F7FA8', d: '37 個注音符號，用手指描一次', items: BOPOW },
   { id: 'clock', name: '時鐘',     ic: '🕐', c: '#3B8F63', d: '認到一分、時間差、倒推時刻', items: CLOCK },
