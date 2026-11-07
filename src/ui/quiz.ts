@@ -1,7 +1,7 @@
 /* 一輪練習的流程：出題 → 作答 → 結算 */
 import type { Item, ChoiceQuestion } from '../types';
 import { SUBJECTS, ALL } from '../content';
-import { videosFor } from '../content/videos';
+import { videosFor, embedUrl, type Video } from '../content/videos';
 import { buildSession, grade, today } from '../engine/srs';
 import { S, load, save } from '../engine/store';
 import { $, el, sheet, closeSheet } from './dom';
@@ -153,13 +153,14 @@ function renderChoice(item: Item, q: ChoiceQuestion): void {
             (back.length ? `<div class="hintnext">下一題先練基礎。</div>` : '');
           $('#feedback').append(h);
         }
-        // 有網路才給影片連結（離線點了也打不開）
+        // 有網路才給影片（離線播不了）
         const vids = navigator.onLine ? videosFor(item.cur) : [];
         vids.forEach(v => {
-          const a = el('a', 'vid');
-          a.href = v.url; a.target = '_blank'; a.rel = 'noopener';
-          a.innerHTML = `<span class="play">▶</span><span>看講解影片：${v.title}<small>${v.source}・開新視窗</small></span>`;
-          $('#feedback').append(a);
+          const b = el('button', 'vid');
+          b.type = 'button';
+          b.innerHTML = `<span class="play">▶</span><span>看講解影片：${v.title}<small>${v.source}</small></span>`;
+          b.onclick = () => playVideo(v);
+          $('#feedback').append(b);
         });
         const go = el('button', 'primary'); go.textContent = '知道了，下一題';
         go.style.marginTop = '10px'; go.onclick = next; $('#feedback').append(go);
@@ -167,6 +168,16 @@ function renderChoice(item: Item, q: ChoiceQuestion): void {
     };
     ch.append(b);
   });
+}
+
+/* ---------- 講解影片：在 app 裡播，關掉就停 ---------- */
+function playVideo(v: Video): void {
+  const box = sheet(`<div class="vframe"><iframe src="${embedUrl(v)}" title="${v.title}"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <p class="vsrc">${v.title}・影片來源：${v.source}</p>`,
+    [['看完了', closeSheet]]);
+  box.classList.add('vbox');
 }
 
 /* ---------- 結算與休息 ---------- */
