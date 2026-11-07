@@ -60,6 +60,20 @@ describe('出題', () => {
   });
 });
 
+describe('文字', () => {
+  it('英文科以外，題目和提示不會漏出英文圖檔名（例如 fish 沒有中文名稱）', () => {
+    const bad: string[] = [];
+    for (const it of items().filter(i => i.subj !== 'eng')) for (let r = 0; r < 20; r++) {
+      const q = it.make();
+      if (q.kind) break;
+      const text = [q.ask, q.hint].join(' ').replace(/<[^>]+>/g, '');
+      const m = text.match(/[a-z]{3,}/);        // 圖檔名都是小寫；圖形規律的 ABC 是刻意的
+      if (m) { bad.push(`${it.k}: ${m[0]}`); break; }
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
 describe('往回補', () => {
   it('答錯時要先練的基礎題，key 都真的存在', () => {
     const bad: string[] = [];

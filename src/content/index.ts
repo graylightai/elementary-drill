@@ -6,6 +6,9 @@ import { MONEY } from './math/money';
 import { BOPO, BOPOW } from './zh/bopo';
 import { HANZI, buildHanziItems } from './zh/hanzi';
 import { CLOCK } from './clock/clock';
+import { CLOCK_G1 } from './clock/g1';
+import { LENGTH } from './compare/length';
+import { CLASSIFY } from './compare/classify';
 import { ENGLISH } from './english/english';
 import { MIXQ, RAMPQ } from './art/color';
 import { LOGIC } from './logic/logic';
@@ -16,7 +19,8 @@ export const SUBJECTS: Subject[] = [
   { id: 'money', name: '錢幣',     ic: '元', c: '#B5852A', d: '認錢幣、數錢、換錢、付錢、找錢', items: MONEY },
   { id: 'bopo',  name: '注音',     ic: 'ㄅ', c: '#3B7FB5', d: '拼讀、聲調、形近符號辨別', items: BOPO },
   { id: 'bopow', name: '注音描寫', ic: 'ㄅ', c: '#2F7FA8', d: '37 個注音符號，用手指描一次', items: BOPOW },
-  { id: 'clock', name: '時鐘',     ic: '🕐', c: '#3B8F63', d: '認到一分、時間差、倒推時刻', items: CLOCK },
+  { id: 'clock', name: '時鐘',     ic: '🕐', c: '#3B8F63', d: '整點半點、昨天明天、認到一分、時間差', items: [...CLOCK_G1, ...CLOCK] },
+  { id: 'cmp',   name: '比一比',   ic: '長', c: '#6E8B3D', d: '比長短、用方塊量、分類', items: [...LENGTH, ...CLASSIFY] },
   { id: 'hanzi', name: '國字',     ic: '字', c: '#8A5BA8', d: '筆順描字、數筆畫、形近字辨別', items: HANZI },
   { id: 'eng',   name: '英文',     ic: 'A',  c: '#C9772B', d: '大小寫、字母順序、短單字、數字與顏色', items: ENGLISH },
   { id: 'mix',   name: '混色',     ic: '◓',  c: '#D1577E', d: '兩個顏色混在一起會變成什麼色', items: MIXQ },
