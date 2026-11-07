@@ -124,3 +124,25 @@ describe('課綱對應', () => {
     expect(untagged.map(i => i.k)).toEqual([]);
   });
 });
+
+describe('年級篩選', () => {
+  it('課綱代碼換算年級', async () => {
+    const { gradeOf } = await import('../src/content/grade');
+    expect([gradeOf('N-1-3'), gradeOf('N-2-13'), gradeOf('S-6-4'), gradeOf('Aa-I-3'), gradeOf('Ab-II-1'), gradeOf('Ad-III-2'), gradeOf('xx')])
+      .toEqual([1, 2, 6, 1, 3, 5, null]);
+  });
+
+  it('選一年級時，時鐘只剩整點、半點、日期，沒有認到一分', async () => {
+    const { forGrade } = await import('../src/content/grade');
+    const clock = SUBJECTS.find(s => s.id === 'clock')!.items;
+    const g1 = forGrade(clock, 1).map(i => i.g);
+    expect(new Set(g1)).toEqual(new Set(['整點', '半點', '昨天今天明天', '上午中午下午晚上']));
+    expect(forGrade(clock, 0).length).toBe(clock.length);
+  });
+
+  it('每個科目都歸到一個首頁分區', async () => {
+    const { DOMAINS } = await import('../src/content');
+    const ids = new Set(DOMAINS.map(d => d.id));
+    expect(SUBJECTS.filter(s => !ids.has(s.domain)).map(s => s.id)).toEqual([]);
+  });
+});

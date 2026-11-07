@@ -2,6 +2,7 @@
 import type { Item, ChoiceQuestion } from '../types';
 import { SUBJECTS, ALL } from '../content';
 import { videosFor, embedUrl, type Video } from '../content/videos';
+import { forGrade } from '../content/grade';
 import { buildSession, grade, today } from '../engine/srs';
 import { S, load, save } from '../engine/store';
 import { $, el, sheet, closeSheet } from './dom';
@@ -34,7 +35,7 @@ let restMark = Math.floor(elapsed.s / 60 / S.rest);
 
 export function start(subjId: string): void {
   const subj = SUBJECTS.find(s => s.id === subjId)!;
-  const q = buildSession(subj.items, S.len);
+  const q = buildSession(forGrade(subj.items, S.grade), S.len);
   if (!q.length) return;
   session = { subj: subjId, list: q, i: 0, ok: 0, bad: 0, extra: 0, t0: performance.now(), marks: [], remedial: new Set() };
   show('quiz');

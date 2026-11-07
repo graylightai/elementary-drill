@@ -68,8 +68,11 @@ export interface Item {
   make: () => Question;
 }
 
+export type DomainId = 'math' | 'zh' | 'eng' | 'extra';
+
 export interface Subject {
   id: string;
+  domain: DomainId;
   name: string;
   ic: string;
   c: string;

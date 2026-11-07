@@ -282,3 +282,13 @@ details.note2 .body ul{margin:8px 0;padding-left:18px}
 .lensvg{display:block;margin:0 auto;max-width:100%;height:auto}
 .lensvg .lengrid{stroke:var(--line);stroke-width:1}
 .lensvg .lenblk{fill:var(--surface);stroke:var(--muted);stroke-width:1.5}
+
+/* ---- 首頁：年級、課綱領域分區 ---- */
+.grade{margin:0 0 6px}
+.grade .seg button{padding:7px 12px;font-size:13px}
+.domain{margin-top:20px}
+.domain h2{font-family:var(--display);font-weight:600;font-size:19px;margin:0}
+.dnote{margin:2px 0 10px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.grade .dnote{margin-top:8px}
+.subj .gr{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;font-family:var(--body,inherit);
+  font-size:11px;font-weight:500;color:var(--muted);background:color-mix(in srgb,var(--c) 12%,transparent);vertical-align:2px}

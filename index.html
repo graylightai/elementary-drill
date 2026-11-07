@@ -28,8 +28,12 @@
   <!-- ============ 首頁 ============ -->
   <main class="page on pad" id="home">
     <h1>今天練哪一科？</h1>
-    <p class="lede">一次 12 題。答錯的隔天一定會再出現，答得慢的也會抓回來——所以不用一次練很久。</p>
-    <div class="subjects" id="subjects"></div>
+    <p class="lede">一次 <span id="lenNote">12</span> 題。答錯的隔天一定會再出現，答得慢的也會抓回來——所以不用一次練很久。</p>
+    <div class="grade">
+      <div class="seg" id="gradeSeg" role="group" aria-label="年級"></div>
+      <p class="dnote" id="gradeNote"></p>
+    </div>
+    <div id="subjects"></div>
     <div class="row">
       <button class="ghost" data-go="report">📋 弱點診斷</button>
       <button class="ghost" data-go="settings">⚙︎ 設定</button>

@@ -6,7 +6,7 @@ const LOGIC: Item[] = [];
 // 規律接續：AB / AAB / ABC / ABB 四種節奏，變化可能在形狀或顏色
 ([['AB', 2], ['ABC', 3], ['AAB', 3], ['ABB', 3]] as const).forEach(([pat]) =>
   ['shape', 'color'].forEach(dim => LOGIC.push({
-    k: `lg.seq.${pat}.${dim}`, g: '找規律', subj: 'logic', cur: ['R-3-2'],
+    k: `lg.seq.${pat}.${dim}`, g: '找規律', subj: 'logic', cur: [],   // 一般推理練習，不掛課綱（R-3-2 是三年級的數列規律，掛上去一年級就看不到了）
     make: () => {
       const uniqN = uniq(pat.split('')).length;
       const pool = dim === 'shape' ? shuffle(SHAPES.slice()).slice(0, uniqN)

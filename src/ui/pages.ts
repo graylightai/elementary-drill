@@ -1,5 +1,6 @@
 /* 首頁、弱點診斷、設定 */
-import { SUBJECTS, ALL } from '../content';
+import { SUBJECTS, ALL, DOMAINS } from '../content';
+import { itemGrade, forGrade, gradeRange, categoriesOf } from '../content/grade';
 import { WORDS } from '../content/words';
 import { SR, SLOW_MS, today } from '../engine/srs';
 import { S, saveSettings } from '../engine/store';
@@ -17,19 +18,55 @@ export function show(v: string): void {
   if (v === 'report') buildReport();
 }
 
+const GRADE_NAME = ['全部', '一年級', '二年級', '三年級', '四年級', '五年級', '六年級'];
+
 export function buildHome(): void {
   const t = today();
+  $('#lenNote').textContent = String(S.len);
+
+  /* 年級：只列出真的有題目的年級 */
+  const has = new Set(SUBJECTS.flatMap(s => s.items.map(itemGrade)).filter((g): g is number => g !== null));
+  const chips = $('#gradeSeg'); chips.replaceChildren();
+  [0, ...[1, 2, 3, 4, 5, 6].filter(g => has.has(g))].forEach(g => {
+    const b = el('button'); b.type = 'button'; b.textContent = GRADE_NAME[g];
+    b.setAttribute('aria-pressed', String(S.grade === g));
+    b.onclick = () => { S.grade = g; saveSettings(); buildHome(); };
+    chips.append(b);
+  });
+  $('#gradeNote').textContent = S.grade
+    ? `只出${S.grade === 1 ? '一年級' : `一年級到${GRADE_NAME[S.grade]}`}學過的內容；英文和課綱以外的不分年級。`
+    : '全部年級的題目都會出。選年級可以只複習學過的。';
+
+  /* 依課綱領域分區 */
   const host = $('#subjects'); host.replaceChildren();
-  SUBJECTS.forEach(s => {
-    const due = s.items.filter(i => !SR[i.k] || SR[i.k].d <= t).length;
-    const mastered = s.items.filter(i => SR[i.k] && SR[i.k].b >= 4).length;
-    const b = el('button', 'subj');
-    b.style.setProperty('--c', s.c);
-    b.innerHTML = `<div class="ic">${s.ic}</div>
-      <div style="flex:1"><div class="t">${s.name}</div><div class="d">${s.d}</div></div>
-      <div class="st"><b>${due}</b>該練<br>${mastered}/${s.items.length} 熟</div>`;
-    b.onclick = () => start(s.id);
-    host.append(b);
+  DOMAINS.forEach(dm => {
+    const subs = SUBJECTS.filter(s => s.domain === dm.id)
+      .map(s => ({ s, items: forGrade(s.items, S.grade) }))
+      .filter(x => x.items.length);
+    if (!subs.length) return;
+    const cats = categoriesOf(subs.flatMap(x => x.items));
+    const sec = el('section', 'domain');
+    sec.innerHTML = `<h2>${dm.name}</h2><p class="dnote">${dm.note}${cats.length ? `：${cats.join('・')}` : ''}</p>`;
+    const list = el('div', 'subjects');
+    subs.forEach(({ s, items }) => {
+      const due = items.filter(i => !SR[i.k] || SR[i.k].d <= t).length;
+      const mastered = items.filter(i => SR[i.k] && SR[i.k].b >= 4).length;
+      const range = gradeRange(items);
+      // 年級篩掉一部分時，說明改成實際會出的細項，不然會寫著「認到一分」卻不出
+      const groups = [...new Set(items.map(i => i.g))];
+      const desc = items.length < s.items.length
+        ? groups.slice(0, 5).join('、') + (groups.length > 5 ? '…' : '') : s.d;
+      const b = el('button', 'subj');
+      b.style.setProperty('--c', s.c);
+      b.innerHTML = `<div class="ic">${s.ic}</div>
+        <div style="flex:1;min-width:0"><div class="t">${s.name}${range ? `<span class="gr">${range}</span>` : ''}</div>
+          <div class="d">${desc}</div></div>
+        <div class="st"><b>${due}</b>該練<br>${mastered}/${items.length} 熟</div>`;
+      b.onclick = () => start(s.id);
+      list.append(b);
+    });
+    sec.append(list);
+    host.append(sec);
   });
 }
 
