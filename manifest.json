@@ -1,7 +1,7 @@
 {
-  "name": "小一練功房",
-  "short_name": "小一練功房",
-  "description": "小學一年級的數學、注音、時鐘錢幣與國字練習，離線可用",
+  "name": "小學練功房",
+  "short_name": "小學練功房",
+  "description": "國小一到六年級的數學、注音、時鐘錢幣與國字練習，離線可用",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

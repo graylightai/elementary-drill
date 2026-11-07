@@ -1,8 +1,8 @@
-# 小一練功房
+# 小學練功房
 
 小學一年級的數學、注音、時鐘錢幣與國字練習。純靜態網頁，**完全離線可用**，沒有後端、沒有外連資源、沒有任何資料上傳。
 
-**線上版：https://graylightai.github.io/grade1-drill/**
+**線上版：https://graylightai.github.io/elementary-drill/**
 
 手機用 Safari 或 Chrome 開，「分享 → 加入主畫面」就是全螢幕、鎖直板的 app。
 
