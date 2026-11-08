@@ -8,6 +8,7 @@ import { median } from '../util';
 import { $, el } from './dom';
 import { sfx } from './sfx';
 import { start, elapsed } from './quiz';
+import { cells, isLit, type Cell } from '../engine/mastery';
 
 export let view = 'home';
 export function show(v: string): void {
@@ -16,6 +17,7 @@ export function show(v: string): void {
   view = v; window.scrollTo(0, 0);
   if (v === 'home') buildHome();
   if (v === 'report') buildReport();
+  if (v === 'map') buildMap();
 }
 
 const GRADE_NAME = ['全部', '一年級', '二年級', '三年級', '四年級', '五年級', '六年級'];
@@ -36,6 +38,10 @@ export function buildHome(): void {
   $('#gradeNote').textContent = S.grade
     ? `只出${S.grade === 1 ? '一年級' : `一年級到${GRADE_NAME[S.grade]}`}學過的內容；英文和課綱以外的不分年級。`
     : '全部年級的題目都會出。選年級可以只複習學過的。';
+
+  /* 學習地圖入口：顯示已點亮幾格 */
+  const all = cells(SUBJECTS.flatMap(s => forGrade(s.items, S.grade)));
+  $('#mapBtn').innerHTML = `<span class="mi">🗺</span><span><b>我的學習地圖</b><small>已點亮 ${all.filter(isLit).length} / ${all.length} 格</small></span><span class="go">›</span>`;
 
   /* 依課綱領域分區 */
   const host = $('#subjects'); host.replaceChildren();
@@ -68,6 +74,42 @@ export function buildHome(): void {
     sec.append(list);
     host.append(sec);
   });
+}
+
+/* ---------- 學習地圖 ---------- */
+function tile(c: Cell): HTMLButtonElement {
+  const lit = isLit(c), pct = Math.round(c.prog * 100), grade = gradeRange(c.items);
+  const b = el('button', 'tile' + (lit ? ' lit' : c.tried ? ' doing' : ' new'));
+  b.type = 'button';
+  b.style.setProperty('--p', `${pct}%`);
+  b.innerHTML = `<span class="tn">${c.g}</span>
+    <span class="tm">${lit ? '★ 點亮了' : c.tried ? `${pct}%` : '還沒練'}${grade ? `・${grade.replace(' 年級', '年級')}` : ''}</span>`;
+  b.onclick = () => start(c.subj, c.g);
+  return b;
+}
+
+function buildMap(): void {
+  const body = $('#mapBody'); body.replaceChildren();
+  let lit = 0, total = 0;
+  DOMAINS.forEach(dm => {
+    SUBJECTS.filter(s => s.domain === dm.id).forEach(s => {
+      const cs = cells(forGrade(s.items, S.grade));
+      if (!cs.length) return;
+      // 依年級排，同年級保持題庫的順序（就是學習順序）
+      cs.sort((a, b) => (itemGrade(a.items[0]) ?? 0) - (itemGrade(b.items[0]) ?? 0));
+      lit += cs.filter(isLit).length; total += cs.length;
+      const sec = el('section', 'mapsec');
+      sec.style.setProperty('--c', s.c);
+      sec.innerHTML = `<h2><span class="ic">${s.ic}</span>${s.name}<small>${cs.filter(isLit).length} / ${cs.length}</small></h2>`;
+      const grid = el('div', 'tiles');
+      cs.forEach(c => grid.append(tile(c)));
+      sec.append(grid);
+      body.append(sec);
+    });
+  });
+  $('#mapSum').innerHTML = `<div class="big">${lit}<small> / ${total} 格點亮</small></div>
+    <div class="meter"><i style="width:${total ? Math.round(lit / total * 100) : 0}%"></i></div>
+    <p class="dnote">${S.grade ? `只顯示到${['', '一', '二', '三', '四', '五', '六'][S.grade]}年級的內容（首頁可以改）。` : '顯示全部年級。'}</p>`;
 }
 
 /* ---------- 弱點診斷 ---------- */

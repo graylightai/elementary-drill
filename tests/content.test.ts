@@ -175,3 +175,20 @@ describe('二年級計算題的答案', () => {
     }
   });
 });
+
+describe('學習地圖', () => {
+  it('每個細項一格，進度是箱號平均，75% 以上點亮', async () => {
+    const { cells, isLit } = await import('../src/engine/mastery');
+    const { SR } = await import('../src/engine/srs');
+    const t10 = items().filter(i => i.g === '湊十');
+    t10.forEach((it, i) => { SR[it.k] = { b: i < 6 ? 4 : 2, d: 0, n: 1, ok: 1, bad: 0, t: [1] }; });
+    const [c] = cells(t10);
+    expect(c.g).toBe('湊十');
+    expect(c.prog).toBeCloseTo((6 * 4 + 3 * 2) / (9 * 4));   // 30/36 ≈ 83%
+    expect(isLit(c)).toBe(true);
+    t10.forEach(it => { delete SR[it.k]; });
+    expect(isLit(cells(t10)[0])).toBe(false);
+    const all = cells(items());
+    expect(all.length).toBe(new Set(items().map(i => i.subj + '/' + i.g)).size);
+  });
+});

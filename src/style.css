@@ -328,3 +328,29 @@ details.note2 .body ul{margin:8px 0;padding-left:18px}
 .ch .frac{width:100%;max-width:110px}
 .shp{display:block;margin:0 auto;fill:#7FB3D5;stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round}
 .shp.solid .s1{fill:#9CC7E8}.shp.solid .s2{fill:#C9E1F2}.shp.solid .s3{fill:#6FA3CC}
+
+/* ---- 學習地圖 ---- */
+.mapbtn{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 4px;padding:14px 16px;border-radius:16px;
+  border:2px solid var(--gold,#D9A93B);background:color-mix(in srgb,var(--gold,#D9A93B) 12%,var(--surface));color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.mapbtn .mi{font-size:26px}
+.mapbtn b{display:block;font-family:var(--display);font-size:17px}
+.mapbtn small{color:var(--muted);font-size:12.5px}
+.mapbtn .go{margin-left:auto;font-size:24px;color:var(--muted)}
+.mapsum .big{font-family:var(--display);font-size:34px;font-weight:700;font-variant-numeric:tabular-nums}
+.mapsum .big small{font-size:15px;font-weight:500;color:var(--muted)}
+.mapsum .meter{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:6px 0}
+.mapsum .meter i{display:block;height:100%;background:var(--gold,#D9A93B)}
+.mapsec{margin-top:22px}
+.mapsec h2{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:18px;margin:0 0 10px}
+.mapsec h2 .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.mapsec h2 small{margin-left:auto;font-size:13px;color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-height:76px;padding:9px 10px;
+  border-radius:12px;font:inherit;text-align:left;cursor:pointer;overflow:hidden;color:var(--ink);background:var(--surface);border:1.5px solid var(--line)}
+.tile .tn{position:relative;font-size:13.5px;font-weight:700;line-height:1.3}
+.tile .tm{position:relative;font-size:11px;color:var(--muted)}
+.tile.new{border-style:dashed;background:transparent}
+.tile.doing::before{content:'';position:absolute;left:0;bottom:0;height:var(--p);width:100%;background:color-mix(in srgb,var(--c) 16%,transparent)}
+.tile.lit{border-color:var(--gold,#D9A93B);background:color-mix(in srgb,var(--gold,#D9A93B) 28%,var(--surface));box-shadow:0 0 0 2px color-mix(in srgb,var(--gold,#D9A93B) 35%,transparent)}
+.tile.lit .tm{color:var(--ink);font-weight:700}
+.newlit{margin:6px 0 10px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--gold,#D9A93B) 22%,transparent);font-size:14px}

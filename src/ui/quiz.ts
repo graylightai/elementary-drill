@@ -3,6 +3,7 @@ import type { Item, ChoiceQuestion } from '../types';
 import { SUBJECTS, ALL } from '../content';
 import { videosFor, embedUrl, type Video } from '../content/videos';
 import { forGrade } from '../content/grade';
+import { cells, litIds, isLit } from '../engine/mastery';
 import { buildSession, grade, today } from '../engine/srs';
 import { S, load, save } from '../engine/store';
 import { $, el, sheet, closeSheet } from './dom';
@@ -15,6 +16,11 @@ import { show } from './pages';
 
 export interface Session {
   subj: string;
+  /** 從學習地圖點進來時，只練這一格（細項名稱） */
+  group?: string;
+  /** 開始前已點亮的格子，結算時比對出「新點亮」 */
+  litBefore: Set<string>;
+  pool: Item[];
   list: Item[];
   i: number;
   ok: number;
@@ -33,11 +39,13 @@ export let elapsed: { d: number; s: number } = load('g1.time', { d: today(), s: 
 if (elapsed.d !== today()) elapsed = { d: today(), s: 0 };
 let restMark = Math.floor(elapsed.s / 60 / S.rest);
 
-export function start(subjId: string): void {
+export function start(subjId: string, group?: string): void {
   const subj = SUBJECTS.find(s => s.id === subjId)!;
-  const q = buildSession(forGrade(subj.items, S.grade), S.len);
+  const pool = forGrade(subj.items, S.grade).filter(i => !group || i.g === group);
+  const q = buildSession(pool, S.len);
   if (!q.length) return;
-  session = { subj: subjId, list: q, i: 0, ok: 0, bad: 0, extra: 0, t0: performance.now(), marks: [], remedial: new Set() };
+  session = { subj: subjId, group, pool, litBefore: litIds(pool), list: q, i: 0, ok: 0, bad: 0, extra: 0,
+    t0: performance.now(), marks: [], remedial: new Set() };
   show('quiz');
   stopTimer();
   tick = setInterval(() => {
@@ -191,6 +199,8 @@ function finish(): void {
   sfx.win();
   const mins = Math.floor(elapsed.s / 60);
   const needRest = Math.floor(mins / S.rest) > restMark;
+  // 這一輪新點亮的格子
+  const nowLit = cells(s.pool).filter(c => isLit(c) && !s.litBefore.has(c.subj + '/' + c.g)).map(c => c.g);
   sheet(`<h3>做完了！</h3>
     <div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
     <div class="score">
@@ -198,8 +208,9 @@ function finish(): void {
       <div><div class="k">答錯</div><div class="v">${s.bad}</div></div>
       <div><div class="k">用時</div><div class="v">${sec}<small>秒</small></div></div>
     </div>
+    ${nowLit.length ? `<div class="newlit">🌟 新點亮：<b>${nowLit.join('、')}</b></div>` : ''}
     <p>${s.bad ? `答錯的 ${s.bad} 題明天會再出現。` : '全對！這些題目會隔比較久才再出現。'}</p>`,
-    [['再來一輪', () => { closeSheet(); start(s.subj); }],
+    [['再來一輪', () => { closeSheet(); start(s.subj, s.group); }],
      ['回首頁', () => { closeSheet(); show('home'); }, 'link']],
     () => { if (needRest) { restMark = Math.floor(mins / S.rest); rest(); } });
 }
