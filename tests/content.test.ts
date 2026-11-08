@@ -215,3 +215,12 @@ describe('二年級應用題的答案', () => {
     }
   });
 });
+
+describe('課綱涵蓋', () => {
+  it('一、二年級數學的每一條學習內容都至少有一個知識點', () => {
+    const tagged = new Set(items().flatMap(i => i.cur));
+    const need = (curriculum as { nodes: { code: string; subj: string; level: number }[] }).nodes
+      .filter(n => n.subj === 'math' && n.level <= 2).map(n => n.code);
+    expect(need.filter(c => !tagged.has(c))).toEqual([]);
+  });
+});
