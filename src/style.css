@@ -412,3 +412,26 @@ details.note2 .body ul{margin:8px 0;padding-left:18px}
 .circ .cp-dot{fill:var(--red)}
 .net{display:block;margin:0 auto;max-width:100%}
 .net rect{fill:#F3C27A;stroke:var(--ink);stroke-width:1.5}
+
+/* ---- 四年級：帶分數、百數表、量角器、垂直平行、全等、四邊形、圖表 ---- */
+.mw{font-size:1.1em;margin-right:2px;vertical-align:middle}
+.h100{display:grid;grid-template-columns:repeat(3,48px);gap:3px;justify-content:center;font-family:'Fredoka',sans-serif;font-size:18px}
+.h100 span{border:1.5px solid var(--line);border-radius:6px;text-align:center;padding:8px 0;background:var(--surface);min-height:20px}
+.h100 span.on{border-color:var(--red);font-weight:700}
+.prot{display:block;margin:0 auto;max-width:100%;height:auto}
+.prot .pt-b{fill:color-mix(in srgb,#8EC3E6 25%,var(--surface));stroke:var(--ink);stroke-width:1.5}
+.prot .pt-t{stroke:var(--ink);stroke-width:1}
+.prot .pt-o{font-size:10px;text-anchor:middle;fill:var(--ink);font-family:'Fredoka',sans-serif}
+.prot .pt-i{font-size:9px;text-anchor:middle;fill:var(--muted);font-family:'Fredoka',sans-serif}
+.prot .pt-ray{fill:none;stroke:var(--red);stroke-width:3;stroke-linecap:round}
+.prot .pt-c{fill:var(--ink)}
+.pp line{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.cg path{fill:#F3C27A;stroke:var(--ink);stroke-width:2}
+.qd polygon{fill:color-mix(in srgb,#8EC3E6 40%,var(--surface));stroke:var(--ink);stroke-width:2.5}
+.chart{display:block;margin:0 auto;max-width:100%;height:auto}
+.chart .ch-g{stroke:var(--line);stroke-width:1}
+.chart .ch-y,.chart .ch-x{font-size:10px;fill:var(--muted);text-anchor:middle}
+.chart .ch-y{text-anchor:end}
+.chart .ch-b{fill:#8EC3E6;stroke:var(--ink);stroke-width:1.5}
+.chart .ch-l{fill:none;stroke:var(--red);stroke-width:2.5}
+.chart .ch-d{fill:var(--red)}

@@ -217,10 +217,10 @@ describe('二年級應用題的答案', () => {
 });
 
 describe('課綱涵蓋', () => {
-  it('一到三年級數學的每一條學習內容都至少有一個知識點', () => {
+  it('一到四年級數學的每一條學習內容都至少有一個知識點', () => {
     const tagged = new Set(items().flatMap(i => i.cur));
     const need = (curriculum as { nodes: { code: string; subj: string; level: number }[] }).nodes
-      .filter(n => n.subj === 'math' && n.level <= 3).map(n => n.code);
+      .filter(n => n.subj === 'math' && n.level <= 4).map(n => n.code);
     expect(need.filter(c => !tagged.has(c))).toEqual([]);
   });
 });
@@ -252,6 +252,49 @@ describe('三年級計算題的答案', () => {
       const [x, y] = [...first(q).art!.matchAll(/<i>(\d+)<\/i>/g)].map(m => Number(m[1]));
       expect([x, y], q.art).toEqual([k === 'fr3.add' ? a + b : a - b, n]);
       expect(x / y).toBeLessThanOrEqual(2);
+    }
+  });
+});
+
+describe('四年級計算題的答案', () => {
+  const ok = (q: { choices: Choice[] }) => String(q.choices.find(c => c.ok)!.t);
+  const num = (t: string) => Number(t.replace(/[^0-9.]/g, ''));
+  const js = (e: string) => e.replace(/×/g, '*').replace(/÷/g, '/').replace(/＋/g, '+').replace(/－/g, '-');
+  it('運算順序：照「括號先算、先乘除後加減、由左往右」算', () => {
+    for (let r = 0; r < 200; r++) {
+      const q = ALL['order'].make(); if (q.kind) throw 0;
+      expect(num(ok(q)), q.big).toBe(Function(`return ${js(q.big!)}`)());
+    }
+  });
+  it('多位數乘除、簡便算法、計算規律', () => {
+    for (const k of ['m4.mul2', 'm4.mul3', 'm4.zeros', 'rule']) for (let r = 0; r < 80; r++) {
+      const q = ALL[k].make(); if (q.kind) throw 0;
+      expect(num(ok(q)), `${k}: ${q.big}`).toBe(Function(`return ${js(q.big!.replace(/,/g, ''))}`)());
+    }
+  });
+  it('二位數除法：商 × 除數 ＋ 餘數 ＝ 被除數，餘數比除數小', () => {
+    for (let r = 0; r < 100; r++) {
+      const q = ALL['m4.div2'].make(); if (q.kind) throw 0;
+      const [n, d] = q.big!.split('÷').map(x => Number(x.trim()));
+      const [qq, rr = 0] = ok(q).split('餘').map(x => Number(x.trim()));
+      expect(qq * d + rr, q.big).toBe(n); expect(rr).toBeLessThan(d);
+    }
+  });
+  it('二位小數加減乘：用百分之一的整數重算', () => {
+    for (const k of ['dec2.add', 'dec2.sub', 'dec2.mul']) for (let r = 0; r < 80; r++) {
+      const q = ALL[k].make(); if (q.kind) throw 0;
+      const [a, op, b] = q.big!.split(' ');
+      const A = Math.round(Number(a) * 100), B = op === '×' ? Number(b) : Math.round(Number(b) * 100);
+      const want = op === '＋' ? A + B : op === '－' ? A - B : A * B;
+      expect(Math.round(Number(ok(q)) * 100), q.big).toBe(want);
+    }
+  });
+  it('概數：四捨五入、無條件進入、無條件捨去', () => {
+    const fn: Record<string, (x: number) => number> = { round: Math.round, ceil: Math.ceil, floor: Math.floor };
+    for (const id of Object.keys(fn)) for (let r = 0; r < 80; r++) {
+      const q = ALL[`appr.${id}`].make(); if (q.kind) throw 0;
+      const n = Number(q.ask!.split(' ')[0].replace(/,/g, '')), p = { 百位: 100, 千位: 1000, 萬位: 10000 }[q.ask!.match(/取到(.位)/)![1]]!;
+      expect(num(ok(q).replace(/,/g, '')), q.ask).toBe(fn[id](n / p) * p);
     }
   });
 });

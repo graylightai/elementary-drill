@@ -5,7 +5,7 @@
    均一教育平台的內容是 CC BY-NC-SA 3.0 TW（非商業）。這個 app 之後若收費，
    要先取得均一書面同意，或不把影片當作付費功能的一部分。
    下面每一支都用 YouTube oEmbed 確認過：在均一官方頻道 @JunyiAcademy、允許嵌入
-   （一年級與時鐘那幾支 2026-11-07，二、三年級 2026-11-08）。 */
+   （一年級與時鐘那幾支 2026-11-07，二到四年級 2026-11-08）。 */
 import type { Item } from '../types';
 
 export interface Video { title: string; yt: string; source: string }
@@ -101,6 +101,67 @@ const LIB: Record<string, string> = {
   'wV3T7qE5J-A': '認識 1 公斤秤與實測',
   'xHH4pUWA1RQ': '認識日、時、分和秒',
   'y6g-4iIG9Vo': '乘除互逆關係',
+  // 四年級（2026-11-08 確認）
+  'iMKDPeiBCpI': '認識平方公尺',
+  '-DK8yKNfOkk': '乘除、連除兩步驟的併式',
+  '0YGRstvTboA': '認識平行四邊形、梯形',
+  '3dLo2exBmKs': '整數、分數和小數數線',
+  '6AC5cKZrzTo': '乘、除兩步驟問題 不含併式',
+  '9emrH4j5zeA': '連除兩步驟問題 不含併式',
+  'B74zYaNOjCk': '簡單異分母分數的比較',
+  'CHETvzgpL4o': '認識真分數、假分數和帶分數',
+  'Dh2S0-O1o50': '認識一位小數數線',
+  'GWzpFNSi9ek': '以角分類三角形',
+  'GcKfOD-O4Lo': '以邊分類三角形',
+  'HijAyF__Wyw': 'AM/PM 及 24小時制',
+  'JCxQYd19nBg': '認識垂直與平行',
+  'KNlss7MoB4M': '圖形的模式與推理',
+  'M3K90v4leOY': '量角器的認識與報讀 (量角)',
+  'MrgEinAKBgQ': '二位小數的加、減直式計算',
+  'NKaSoiMIheA': '二位小數 × 整數的直式計算與應用',
+  'OXsnddZ7N4Y': '認識一億以內的數',
+  'OYNEQfFUAOw': '無條件捨去法',
+  'PreckbC4R1M': '應用概數做估算',
+  'Q27F4FX0ojg': '認識體積及體積單位「立方公分」',
+  'QmEXVHaoHIc': '除數是二位數的除法',
+  'RETIi3Lmsqc': '小數的大小比較',
+  'RZ-Os7WQVOQ': '報讀長條圖',
+  'Rw7y8vYN1x0': '加減兩步驟的混合計算',
+  'Su8gB_Fkfv4': '分數的整數倍',
+  'T1UZLMAxoxo': '公里和公尺的加減',
+  'UokhTe_8HKA': '時間量的加減計算',
+  'WIPmbwzdD4k': '簡單複合圖形的周長',
+  'WrNwQ_Ls0XI': '認識平角與周角',
+  'XKegGJ4CbDw': '簡單複合圖形的面積',
+  '_YOxwubFRR4': '同分母分數的加減',
+  '_zsaPNAle0o': '四捨五入法',
+  'bsG8QOussX8': '公里和公尺、公分的換算',
+  'dLRGvd3USFU': '簡單分數與小數的互換',
+  'dRVI-_FylBo': '大數的加減',
+  'f1Fbr4jEmwM': '無條件進入法',
+  'fan4swe7eUk': '報讀折線圖',
+  'g8zOft0VFM4': '乘數是三位數的乘法',
+  'gcg-6XHNhzs': '一億以內數的換算',
+  'hZ9Bc9TLvIM': '等值分數',
+  'i0tsL-RGww8': '末位是 0 的除法',
+  'jG9pIO2pyRo': '認識旋轉角',
+  'jydiWPCKDC4': '乘數是二位數的乘法',
+  'k6wQVwE-q3g': '長方形與正方形的面積',
+  'lAmYJaTDCOw': '長方形與正方形的周長',
+  'lgfEToUwj6g': '認識分數數線',
+  'niBwLeTdo7M': '周長與面積',
+  'ohsBxuz9x50': '以立方公分進行實測、估測及計算',
+  'p2ZqJEefpvg': '全等圖形和全等三角形',
+  'qip1WNowEdc': '認識公里',
+  'rMnp5nTHW_A': '認識二位小數、百分位與小數化聚',
+  'taORlO6MzH0': '認識正方形、長方形、菱形',
+  'u_cEQwixc_0': '假分數與帶分數的互換',
+  'xVzfTzc3Upg': '末位是 0 的乘法',
+  'xW4pQNPgwBw': '兩時刻間的時間量 (跨午、跨日)',
+  'yoH_YGRis4o': '生活中的概數',
+  // 2026-11-08 由 scripts/sync-videos.py 確認後加入
+  'Bo3OQmbXYS0': '特殊三角形的簡單性質',
+  'E0uwgwAScUs': '認識四邊形的簡單性質',
 };
 export const VIDEO_IDS = Object.keys(LIB);
 
