@@ -10,8 +10,14 @@ import { MEASURE_G2 } from './math/g2/measure';
 import { SHAPE_G2 } from './math/g2/shape';
 import { MORE_G2 } from './math/g2/more';
 import { SHAPE_G1 } from './math/shape1';
+import { NUM_G3 } from './math/g3/num';
+import { OPS_G3 } from './math/g3/ops';
+import { FRAC_G3 } from './math/g3/frac';
+import { MEAS_G3 } from './math/g3/meas';
+import { GEO_G3 } from './math/g3/geo';
 
-const more = (subj: string) => MORE_G2.filter(i => i.subj === subj);
+const G3 = [...NUM_G3, ...OPS_G3, ...FRAC_G3, ...MEAS_G3, ...GEO_G3];
+const more = (subj: string) => [...MORE_G2, ...G3].filter(i => i.subj === subj);
 import { BOPO, BOPOW } from './zh/bopo';
 import { HANZI, buildHanziItems } from './zh/hanzi';
 import { CLOCK } from './clock/clock';
@@ -26,14 +32,15 @@ import type { StrokeData } from '../ui/visuals/glyph';
 /* 依 108 課綱的學習領域分區；同一區內照學習順序排。
    id 是學習紀錄與弱點診斷用的，上線後不能改（名稱可以改）。 */
 export const SUBJECTS: Subject[] = [
-  { id: 'num',   domain: 'math',  name: '認識數字', ic: '十', c: '#A0522D', d: '幾個十幾個一、0 的位值、三位數、比大小', items: PLACE },
+  { id: 'num',   domain: 'math',  name: '認識數字', ic: '十', c: '#A0522D', d: '位值、三四位數、比大小、一位小數、數線', items: [...PLACE, ...more('num')] },
   { id: 'math',  domain: 'math',  name: '加減',     ic: '＋', c: '#C94F43', d: '湊十、進退位、應用題、直式、□ 是多少、估算', items: [...MATH, ...WORD_PROBLEMS, ...ARITH_G2, ...more('math')] },
-  { id: 'mul',   domain: 'math',  name: '乘法',     ic: '×', c: '#B04A7A', d: '九九乘法、幾的幾倍、分裝與平分、兩步驟', items: [...MULT, ...more('mul')] },
+  { id: 'mul',   domain: 'math',  name: '乘除',     ic: '×', c: '#B04A7A', d: '九九乘法、幾的幾倍、除法、直式乘除、兩步驟', items: [...MULT, ...more('mul')] },
   { id: 'money', domain: 'math',  name: '錢幣',     ic: '元', c: '#B5852A', d: '認錢幣、數錢、換錢、付錢、找錢、大鈔', items: [...MONEY, ...MEASURE_G2.filter(i => i.subj === 'money')] },
-  { id: 'clock', domain: 'math',  name: '時鐘與日期', ic: '🕐', c: '#3B8F63', d: '整點半點、昨天明天、幾時幾分、月曆、時間差', items: [...CLOCK_G1, ...CLOCK, ...MEASURE_G2.filter(i => i.subj === 'clock')] },
+  { id: 'clock', domain: 'math',  name: '時鐘與日期', ic: '🕐', c: '#3B8F63', d: '整點半點、昨天明天、幾時幾分、月曆、時分秒', items: [...CLOCK_G1, ...CLOCK, ...MEASURE_G2.filter(i => i.subj === 'clock'), ...more('clock')] },
   { id: 'cmp',   domain: 'math',  name: '量與比較', ic: '量', c: '#6E8B3D', d: '比長短、用尺量、容量、重量、面積、分類', items: [...LENGTH, ...MEASURE_G2.filter(i => i.subj === 'cmp'), ...more('cmp'), ...CLASSIFY] },
-  { id: 'frac',  domain: 'math',  name: '分數',     ic: '½', c: '#7A5BC0', d: '平分、幾分之一', items: SHAPE_G2.filter(i => i.subj === 'frac') },
-  { id: 'shape', domain: 'math',  name: '圖形',     ic: '△', c: '#2F8A8A', d: '拼一拼、數積木、平面圖形、立體形體、周長', items: [...SHAPE_G1, ...SHAPE_G2.filter(i => i.subj === 'shape'), ...more('shape')] },
+  { id: 'frac',  domain: 'math',  name: '分數',     ic: '½', c: '#7A5BC0', d: '平分、幾分之一、幾分之幾、同分母加減', items: [...SHAPE_G2.filter(i => i.subj === 'frac'), ...more('frac')] },
+  { id: 'shape', domain: 'math',  name: '圖形',     ic: '△', c: '#2F8A8A', d: '拼一拼、平面與立體、周長、角、圓、展開圖', items: [...SHAPE_G1, ...SHAPE_G2.filter(i => i.subj === 'shape'), ...more('shape')] },
+  { id: 'data',  domain: 'math',  name: '規律與表格', ic: '▦', c: '#5E7C9A', d: '數字的規律、一維與二維表格', items: more('data') },
   { id: 'bopo',  domain: 'zh',    name: '注音',     ic: 'ㄅ', c: '#3B7FB5', d: '拼讀、聲調、形近符號辨別', items: BOPO },
   { id: 'bopow', domain: 'zh',    name: '注音描寫', ic: 'ㄅ', c: '#2F7FA8', d: '37 個注音符號，用手指描一次', items: BOPOW },
   { id: 'hanzi', domain: 'zh',    name: '國字',     ic: '字', c: '#8A5BA8', d: '筆順描字、數筆畫、形近字辨別', items: HANZI },

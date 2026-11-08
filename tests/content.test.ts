@@ -153,17 +153,17 @@ describe('年級篩選', () => {
 describe('二年級計算題的答案', () => {
   const ans = (q: { choices: Choice[] }) => Number(String(q.choices.find(c => c.ok)!.t).replace(/[^0-9]/g, ''));
   it('直式加減：答案等於題目的兩個數相加或相減', () => {
-    for (const it of items().filter(i => i.k.startsWith('vt.'))) for (let r = 0; r < 80; r++) {
+    for (const it of items().filter(i => /^(vt|v3|mul1)\./.test(i.k))) for (let r = 0; r < 80; r++) {
       const q = it.make(); if (q.kind) continue;
       const rows = [...q.art!.matchAll(/<div class="vrow">(.*?)<\/div>/g)].map(m => Number(m[1].replace(/<[^>]+>/g, '').replace(/[^0-9]/g, '')));
-      const [a, b] = rows, plus = q.art!.includes('＋');
-      expect(ans(q), `${it.k} ${a} ${plus ? '+' : '-'} ${b}`).toBe(plus ? a + b : a - b);
+      const [a, b] = rows, op = q.art!.includes('＋') ? '+' : q.art!.includes('×') ? '*' : '-';
+      expect(ans(q), `${it.k} ${a} ${op} ${b}`).toBe(op === '+' ? a + b : op === '*' ? a * b : a - b);
     }
   });
   it('□ 是多少：把答案代回去算式成立', () => {
     for (const it of items().filter(i => i.k.startsWith('unk.'))) for (let r = 0; r < 80; r++) {
       const q = it.make(); if (q.kind) continue;
-      const expr = q.big!.replace('□', String(ans(q))).replace(/＋/g, '+').replace(/－/g, '-').replace('＝', '===');
+      const expr = q.big!.replace('□', String(ans(q))).replace(/＋/g, '+').replace(/－/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace('＝', '===');
       expect(Function(`return ${expr}`)(), `${it.k}: ${q.big}`).toBe(true);
     }
   });
@@ -217,10 +217,41 @@ describe('二年級應用題的答案', () => {
 });
 
 describe('課綱涵蓋', () => {
-  it('一、二年級數學的每一條學習內容都至少有一個知識點', () => {
+  it('一到三年級數學的每一條學習內容都至少有一個知識點', () => {
     const tagged = new Set(items().flatMap(i => i.cur));
     const need = (curriculum as { nodes: { code: string; subj: string; level: number }[] }).nodes
-      .filter(n => n.subj === 'math' && n.level <= 2).map(n => n.code);
+      .filter(n => n.subj === 'math' && n.level <= 3).map(n => n.code);
     expect(need.filter(c => !tagged.has(c))).toEqual([]);
+  });
+});
+
+describe('三年級計算題的答案', () => {
+  const first = (q: { choices: Choice[] }) => q.choices.find(c => c.ok)!;
+  it('除法：商乘回去等於被除數；有餘數時餘數比除數小', () => {
+    for (const it of items().filter(i => /^dv\./.test(i.k))) for (let r = 0; r < 60; r++) {
+      const q = it.make(); if (q.kind) continue;
+      const [n, d] = q.big!.split('÷').map(x => Number(x.trim()));
+      const [qq, rr = 0] = String(first(q).t).split('餘').map(x => Number(x.trim()));
+      expect(qq * d + rr, `${it.k}: ${q.big} → ${first(q).t}`).toBe(n);
+      expect(rr).toBeLessThan(d);
+    }
+  });
+  it('一位小數加減：用十分之一的整數重算', () => {
+    for (const k of ['dec.add', 'dec.sub']) for (let r = 0; r < 60; r++) {
+      const q = ALL[k].make(); if (q.kind) continue;
+      const [a, b] = q.big!.split(/[＋－]/).map(x => Math.round(Number(x.trim()) * 10));
+      const want = k === 'dec.add' ? a + b : a - b;
+      expect(Math.round(Number(first(q).t) * 10), q.big).toBe(want);
+    }
+  });
+  it('同分母分數加減：分子相加減、分母不變、結果不超過 2', () => {
+    for (const k of ['fr3.add', 'fr3.sub']) for (let r = 0; r < 60; r++) {
+      const q = ALL[k].make(); if (q.kind) continue;
+      const nums = [...q.art!.matchAll(/<i>(\d+)<\/i><i>(\d+)<\/i>/g)].map(m => [Number(m[1]), Number(m[2])]);
+      const [[a, n], [b]] = nums;
+      const [x, y] = [...first(q).art!.matchAll(/<i>(\d+)<\/i>/g)].map(m => Number(m[1]));
+      expect([x, y], q.art).toEqual([k === 'fr3.add' ? a + b : a - b, n]);
+      expect(x / y).toBeLessThanOrEqual(2);
+    }
   });
 });

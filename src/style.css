@@ -382,3 +382,33 @@ details.note2 .body ul{margin:8px 0;padding-left:18px}
 .cubes .cb-f{fill:#F3C27A;stroke:var(--ink);stroke-width:1.5}
 .cubes .cb-t{fill:#F8DDB0;stroke:var(--ink);stroke-width:1.5}
 .cubes .cb-s{fill:#D9A35A;stroke:var(--ink);stroke-width:1.5}
+
+/* ---- 三年級：小數長條、數線、分數、表格、角、圓、展開圖 ---- */
+.tbar{display:block;margin:0 auto;max-width:100%;height:auto}
+.tbar .tb-on{fill:#8EC3E6;stroke:var(--ink);stroke-width:1.5}
+.tbar .tb-off{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.nline{display:block;margin:0 auto;max-width:100%;height:auto}
+.nline .nl-axis,.nline .nl-tick{stroke:var(--ink);stroke-width:2}
+.nline .nl-arrow{fill:var(--ink)}
+.nline .nl-num{font-size:12px;text-anchor:middle;fill:var(--ink);font-family:'Fredoka',sans-serif}
+.nline .nl-mark{fill:var(--red)}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 2px;font-style:normal}
+.fr i{font-style:normal;padding:0 3px}
+.fr i:first-child{border-bottom:2px solid currentColor}
+.frbig{font-size:26px;font-weight:700;font-family:'Fredoka',sans-serif}
+.frrow{display:flex;align-items:center;justify-content:center;gap:12px;font-size:34px;font-weight:700;font-family:'Fredoka',sans-serif}
+.frrow span{font-size:28px}
+.dtab{margin:0 auto;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums;background:var(--surface)}
+.dtab th,.dtab td{border:1.5px solid var(--ink);padding:6px 10px;text-align:center}
+.dtab th{background:color-mix(in srgb,var(--red) 10%,var(--surface));font-weight:600}
+.ang .ang-l{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ang .ang-arc{fill:none;stroke:var(--red);stroke-width:2}
+.ang .ang-v{fill:var(--ink)}
+.angA .ang-l{stroke:#C94F43}.angB .ang-l{stroke:#3B7FB5}
+.per .ang-arc{fill:none;stroke:var(--red);stroke-width:2}
+.circ .cp-c{fill:color-mix(in srgb,#8EC3E6 30%,var(--surface));stroke:var(--ink);stroke-width:2.5}
+.circ .cp-o{fill:var(--ink)}
+.circ .cp-hi{stroke:var(--red);stroke-width:4;stroke-linecap:round}
+.circ .cp-dot{fill:var(--red)}
+.net{display:block;margin:0 auto;max-width:100%}
+.net rect{fill:#F3C27A;stroke:var(--ink);stroke-width:1.5}

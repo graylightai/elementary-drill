@@ -5,7 +5,7 @@
    均一教育平台的內容是 CC BY-NC-SA 3.0 TW（非商業）。這個 app 之後若收費，
    要先取得均一書面同意，或不把影片當作付費功能的一部分。
    下面每一支都用 YouTube oEmbed 確認過：在均一官方頻道 @JunyiAcademy、允許嵌入
-   （一年級與時鐘那幾支 2026-11-07，二年級 2026-11-08）。 */
+   （一年級與時鐘那幾支 2026-11-07，二、三年級 2026-11-08）。 */
 import type { Item } from '../types';
 
 export interface Video { title: string; yt: string; source: string }
@@ -48,6 +48,59 @@ const LIB: Record<string, string> = {
   'CPabaPZfwFc': '認識容量的意義與比較',
   'OhP9M1q4fDU': '認識重量的意義與比較',
   'dbFQX6sFO1Q': '認識面積的意義與比較',
+  // 三年級（2026-11-08 確認）
+  '-LBTQcKknCg': '同分母分數的大小比較',
+  '0Yz3lf77sQA': '重量的加減問題',
+  '3GvZQw_gIHU': '數字或數量的規律',
+  '3RmKdFRabSM': '直式除法：三位數除以一位數',
+  '5Y22O53UfPg': '使用工具判斷長方形',
+  '64NWVbqlYIo': '時分的加減計算1',
+  'A2kDAWhplOo': '圓的認識',
+  'DF3yNQ13uTA': '一位小數的大小比較',
+  'DkMjtxDDjHc': '認識直角',
+  'Ep2y8QfNCvk': '加除和除加問題',
+  'FcMgIerCkLo': '半徑、直徑的關係',
+  'I5z1L6Cezqc': '認識數線',
+  'IO5_07lhSQY': '認識分數幾分之幾',
+  'IbolqEkVxX0': '認識除法的意義 (含有餘數)',
+  'J88R_XQL5E4': '一位小數的加法',
+  'KYx7Mt-8Chc': '用估算解決乘法問題',
+  'LXeE0V7o8-M': '連乘兩步驟問題1',
+  'Lm2qOP804aw': '同分母分數的加法',
+  'MAmR1WZ4AuE': '面積的實測與估測',
+  'NUziLUzJFqg': '二次和三次退位的減法',
+  'NYw6dlyXKoE': '長度的換算 (公分與公尺)',
+  'NeRjFU2Ackg': '小數的化聚',
+  'NgV1qLVq0Zc': '被乘數中間有 0 、末尾有 0 的直式計算',
+  'PCb3FMDuqds': '認識 0.1',
+  'RMl9NproJdg': '使用工具判斷正方形',
+  'RU9iojEOYiY': '二維表格的報讀和應用',
+  'Rf-wV9hjKyw': '認識平方公分',
+  'Rh-wasg8eg0': '角的間接比較',
+  'V8fwogjSLvw': '三位數乘以一位數的直式計算含整百',
+  'VFZaY8KElwo': '時、分和秒的換算',
+  'VXc_eTApEl8': '直式除法：二位數除以一位數',
+  'ZHNviuolLf8': '減除和除減問題',
+  '_DMg96F9A-Q': '體驗正方體的展開圖',
+  '_KjQPRYJ9fs': '解決餘數不為0的除法問題',
+  'awQjDJwolxo': '時分的加減計算 2',
+  'c6g9zLRTsa4': '10000以內數的大小比較',
+  'c9C-4FIzEZU': '認識公升與毫升',
+  'f6yiqm38kB0': '一維表格的報讀和應用',
+  'fizvoc4ptJQ': '二維表格的報讀',
+  'gm5193TJp3A': '認識 10000 以內的數',
+  'jNEYK-EiOqM': '容量的換算',
+  'l5cRTw2ElpY': '同分母分數的減法',
+  'lxNZOMzP_xU': '一維表格的報讀',
+  'oy4bjDGzPeo': '二次和三次進位的加法',
+  'qLcqbp4Asx0': '認識毫米、毫米與公分的關係',
+  't6IHXGm3_1k': '二位數乘以一位數的直式計算含整十',
+  'u1efe5DTsoc': '角的直接比較',
+  'vZV3O5UCctk': '認識直式除法',
+  'wAzwC9bW9rE': '一位小數的減法',
+  'wV3T7qE5J-A': '認識 1 公斤秤與實測',
+  'xHH4pUWA1RQ': '認識日、時、分和秒',
+  'y6g-4iIG9Vo': '乘除互逆關係',
 };
 export const VIDEO_IDS = Object.keys(LIB);
 
