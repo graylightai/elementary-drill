@@ -109,9 +109,12 @@ describe('往回補', () => {
 describe('課綱對應', () => {
   const codes = new Set((curriculum as { nodes: { code: string }[] }).nodes.map(n => n.code));
 
-  it('影片對應的課綱代碼都存在', async () => {
-    const { VIDEOS } = await import('../src/content/videos');
+  it('影片對應的課綱代碼都存在，指定的影片都在影片庫裡', async () => {
+    const { VIDEOS, VIDEO_IDS } = await import('../src/content/videos');
     expect(Object.keys(VIDEOS).filter(c => !codes.has(c))).toEqual([]);
+    const lib = new Set(VIDEO_IDS);
+    const bad = [...Object.values(VIDEOS).flat(), ...items().flatMap(i => i.vids || [])].filter(id => !lib.has(id));
+    expect(bad).toEqual([]);
   });
 
   it('標的課綱代碼都存在', () => {
@@ -120,7 +123,7 @@ describe('課綱對應', () => {
   });
 
   it('數學、注音、國字、時鐘的題目都有標課綱', () => {
-    const untagged = items().filter(it => ['math', 'money', 'bopo', 'bopow', 'hanzi', 'clock'].includes(it.subj) && !it.cur.length);
+    const untagged = items().filter(it => ['math', 'num', 'mul', 'money', 'clock', 'cmp', 'frac', 'shape', 'bopo', 'bopow', 'hanzi'].includes(it.subj) && !it.cur.length);
     expect(untagged.map(i => i.k)).toEqual([]);
   });
 });
@@ -144,5 +147,31 @@ describe('年級篩選', () => {
     const { DOMAINS } = await import('../src/content');
     const ids = new Set(DOMAINS.map(d => d.id));
     expect(SUBJECTS.filter(s => !ids.has(s.domain)).map(s => s.id)).toEqual([]);
+  });
+});
+
+describe('二年級計算題的答案', () => {
+  const ans = (q: { choices: Choice[] }) => Number(String(q.choices.find(c => c.ok)!.t).replace(/[^0-9]/g, ''));
+  it('直式加減：答案等於題目的兩個數相加或相減', () => {
+    for (const it of items().filter(i => i.k.startsWith('vt.'))) for (let r = 0; r < 80; r++) {
+      const q = it.make(); if (q.kind) continue;
+      const rows = [...q.art!.matchAll(/<div class="vrow">(.*?)<\/div>/g)].map(m => Number(m[1].replace(/<[^>]+>/g, '').replace(/[^0-9]/g, '')));
+      const [a, b] = rows, plus = q.art!.includes('＋');
+      expect(ans(q), `${it.k} ${a} ${plus ? '+' : '-'} ${b}`).toBe(plus ? a + b : a - b);
+    }
+  });
+  it('□ 是多少：把答案代回去算式成立', () => {
+    for (const it of items().filter(i => i.k.startsWith('unk.'))) for (let r = 0; r < 80; r++) {
+      const q = it.make(); if (q.kind) continue;
+      const expr = q.big!.replace('□', String(ans(q))).replace(/＋/g, '+').replace(/－/g, '-').replace('＝', '===');
+      expect(Function(`return ${expr}`)(), `${it.k}: ${q.big}`).toBe(true);
+    }
+  });
+  it('九九乘法：答案等於兩數相乘', () => {
+    for (const it of items().filter(i => /^x\.\d+x\d+$/.test(i.k))) {
+      const q = it.make(); if (q.kind) continue;
+      const [a, b] = q.big!.split('×').map(Number);
+      expect(ans(q), it.k).toBe(a * b);
+    }
   });
 });

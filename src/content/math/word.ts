@@ -21,12 +21,12 @@ const PLACE: Record<string, string> = { 飛: '樹上', 游: '池塘裡', 跑: '�
 const NAMES = ['小美', '阿哲', '小安', '小樂', '安安', '哥哥', '妹妹'];
 
 /* 對應到既有的算式題 key（這些題目在 g1.ts） */
-function addKey(x: number, y: number): string | undefined {
+export function addKey(x: number, y: number): string | undefined {
   const [a, b] = x <= y ? [x, y] : [y, x];
   if (a >= 1 && a + b <= 10) return `m.a.${a}+${b}`;
   if (a >= 2 && b <= 9 && a + b >= 11) return `m.c.${a}+${b}`;
 }
-function subKey(s: number, b: number): string | undefined {
+export function subKey(s: number, b: number): string | undefined {
   if (s >= 11 && s <= 18 && b >= 2 && b <= 9 && s - b >= 2 && s - b <= 9) return `m.s.${s}-${b}`;
   return addKey(b, s - b);                      // 10 以內的減法用「還差多少」的加法事實來補
 }

@@ -2,6 +2,14 @@
    顏色與相對大小照實際：1 元銅色最小、5 元與 10 元銀色、50 元金色最大；100 元是紙鈔。 */
 
 export const DENOMS = [100, 50, 10, 5, 1] as const;
+export const DENOMS_G2 = [1000, 500, 100, 50, 10, 5, 1] as const;
+
+/* 紙鈔：100 紅、500 棕、1000 藍（照實際的主色，圖案不仿） */
+const BILL: Record<number, { fill: string; edge: string; ink: string }> = {
+  100:  { fill: '#E9A49A', edge: '#A8483C', ink: '#5A1A12' },
+  500:  { fill: '#D9B48C', edge: '#8A5A2B', ink: '#4A2C0E' },
+  1000: { fill: '#A9C4E6', edge: '#3E6699', ink: '#14304F' },
+};
 
 const STYLE: Record<number, { d: number; fill: string; edge: string; ink: string }> = {
   1:  { d: 34, fill: '#D29A55', edge: '#9C6A2E', ink: '#4A2E10' },
@@ -12,13 +20,14 @@ const STYLE: Record<number, { d: number; fill: string; edge: string; ink: string
 
 /** 一個錢幣或一張 100 元紙鈔的 SVG。scale 用來整體放大 */
 export function money(v: number, scale = 1): string {
-  if (v === 100) {
+  const bill = BILL[v];
+  if (bill) {
     const w = 88 * scale, h = 46 * scale;
-    return `<svg class="coin" width="${w}" height="${h}" viewBox="0 0 88 46" role="img" aria-label="100 元紙鈔">
-      <rect x="1.5" y="1.5" width="85" height="43" rx="5" fill="#E9A49A" stroke="#A8483C" stroke-width="2"/>
-      <rect x="7" y="7" width="74" height="32" rx="3" fill="none" stroke="#A8483C" stroke-width="1" opacity=".55"/>
-      <text x="44" y="30" text-anchor="middle" font-size="19" font-weight="700" font-family="Fredoka, sans-serif" fill="#5A1A12">100</text>
-      <text x="76" y="38" text-anchor="end" font-size="8" fill="#5A1A12">元</text></svg>`;
+    return `<svg class="coin" width="${w}" height="${h}" viewBox="0 0 88 46" role="img" aria-label="${v} 元紙鈔">
+      <rect x="1.5" y="1.5" width="85" height="43" rx="5" fill="${bill.fill}" stroke="${bill.edge}" stroke-width="2"/>
+      <rect x="7" y="7" width="74" height="32" rx="3" fill="none" stroke="${bill.edge}" stroke-width="1" opacity=".55"/>
+      <text x="44" y="30" text-anchor="middle" font-size="${v >= 1000 ? 17 : 19}" font-weight="700" font-family="Fredoka, sans-serif" fill="${bill.ink}">${v}</text>
+      <text x="80" y="38" text-anchor="end" font-size="8" fill="${bill.ink}">元</text></svg>`;
   }
   const s = STYLE[v], d = s.d * scale, r = 50;
   return `<svg class="coin" width="${d}" height="${d}" viewBox="0 0 100 100" role="img" aria-label="${v} 元">

@@ -3,6 +3,11 @@ import type { Item, Subject } from '../types';
 import { MATH } from './math/g1';
 import { WORD_PROBLEMS } from './math/word';
 import { MONEY } from './math/money';
+import { PLACE } from './math/place';
+import { ARITH_G2 } from './math/g2/arith';
+import { MULT } from './math/g2/mult';
+import { MEASURE_G2 } from './math/g2/measure';
+import { SHAPE_G2 } from './math/g2/shape';
 import { BOPO, BOPOW } from './zh/bopo';
 import { HANZI, buildHanziItems } from './zh/hanzi';
 import { CLOCK } from './clock/clock';
@@ -17,10 +22,14 @@ import type { StrokeData } from '../ui/visuals/glyph';
 /* 依 108 課綱的學習領域分區；同一區內照學習順序排。
    id 是學習紀錄與弱點診斷用的，上線後不能改（名稱可以改）。 */
 export const SUBJECTS: Subject[] = [
-  { id: 'math',  domain: 'math',  name: '加減',     ic: '＋', c: '#C94F43', d: '湊十、20 以內加減、進退位、應用題', items: [...MATH, ...WORD_PROBLEMS] },
-  { id: 'money', domain: 'math',  name: '錢幣',     ic: '元', c: '#B5852A', d: '認錢幣、數錢、換錢、付錢、找錢', items: MONEY },
-  { id: 'clock', domain: 'math',  name: '時鐘與日期', ic: '🕐', c: '#3B8F63', d: '整點半點、昨天明天、認到一分、時間差', items: [...CLOCK_G1, ...CLOCK] },
-  { id: 'cmp',   domain: 'math',  name: '比一比',   ic: '長', c: '#6E8B3D', d: '比長短、用方塊量、分類', items: [...LENGTH, ...CLASSIFY] },
+  { id: 'num',   domain: 'math',  name: '認識數字', ic: '十', c: '#A0522D', d: '幾個十幾個一、0 的位值、三位數、比大小', items: PLACE },
+  { id: 'math',  domain: 'math',  name: '加減',     ic: '＋', c: '#C94F43', d: '湊十、進退位、應用題、直式、□ 是多少', items: [...MATH, ...WORD_PROBLEMS, ...ARITH_G2] },
+  { id: 'mul',   domain: 'math',  name: '乘法',     ic: '×', c: '#B04A7A', d: '九九乘法、幾的幾倍、分裝與平分', items: MULT },
+  { id: 'money', domain: 'math',  name: '錢幣',     ic: '元', c: '#B5852A', d: '認錢幣、數錢、換錢、付錢、找錢、大鈔', items: [...MONEY, ...MEASURE_G2.filter(i => i.subj === 'money')] },
+  { id: 'clock', domain: 'math',  name: '時鐘與日期', ic: '🕐', c: '#3B8F63', d: '整點半點、昨天明天、幾時幾分、月曆、時間差', items: [...CLOCK_G1, ...CLOCK, ...MEASURE_G2.filter(i => i.subj === 'clock')] },
+  { id: 'cmp',   domain: 'math',  name: '長度與分類', ic: '長', c: '#6E8B3D', d: '比長短、用方塊量、用尺量公分、分類', items: [...LENGTH, ...MEASURE_G2.filter(i => i.subj === 'cmp'), ...CLASSIFY] },
+  { id: 'frac',  domain: 'math',  name: '分數',     ic: '½', c: '#7A5BC0', d: '平分、幾分之一', items: SHAPE_G2.filter(i => i.subj === 'frac') },
+  { id: 'shape', domain: 'math',  name: '圖形',     ic: '△', c: '#2F8A8A', d: '三角形、正方形、長方形、圓形、立體形體', items: SHAPE_G2.filter(i => i.subj === 'shape') },
   { id: 'bopo',  domain: 'zh',    name: '注音',     ic: 'ㄅ', c: '#3B7FB5', d: '拼讀、聲調、形近符號辨別', items: BOPO },
   { id: 'bopow', domain: 'zh',    name: '注音描寫', ic: 'ㄅ', c: '#2F7FA8', d: '37 個注音符號，用手指描一次', items: BOPOW },
   { id: 'hanzi', domain: 'zh',    name: '國字',     ic: '字', c: '#8A5BA8', d: '筆順描字、數筆畫、形近字辨別', items: HANZI },

@@ -22,3 +22,32 @@ function bond(whole: number | null, a: number | null, b: number | null): string 
 }
 
 export { tenFrame, bond };
+
+/* ---------- 位值積木：百（板）、十（條）、一（小方塊） ----------
+   課綱 N-1-1、N-2-1 的參考教具就是位值積木。百是 10×10 的板，十是 1×10 的條。 */
+const BU = 6;                                          // 一個小方塊的邊長
+function flat(x: number, y: number): string {
+  let s = `<rect x="${x}" y="${y}" width="${BU * 10}" height="${BU * 10}" class="pv-h"/>`;
+  for (let i = 1; i < 10; i++) s += `<path d="M${x + i * BU} ${y}v${BU * 10}M${x} ${y + i * BU}h${BU * 10}" class="pv-grid"/>`;
+  return s;
+}
+function rod(x: number, y: number): string {
+  let s = `<rect x="${x}" y="${y}" width="${BU}" height="${BU * 10}" class="pv-t"/>`;
+  for (let i = 1; i < 10; i++) s += `<path d="M${x} ${y + i * BU}h${BU}" class="pv-grid"/>`;
+  return s;
+}
+const unit = (x: number, y: number) => `<rect x="${x}" y="${y}" width="${BU}" height="${BU}" class="pv-o"/>`;
+
+/** 位值積木圖：h 個百、t 個十、o 個一 */
+function blocks(h: number, t: number, o: number): string {
+  let x = 0, s = '';
+  for (let i = 0; i < h; i++) { s += flat(x, 0); x += BU * 10 + 6; }
+  if (h && (t || o)) x += 6;
+  for (let i = 0; i < t; i++) { s += rod(x, 0); x += BU + 4; }
+  if (t && o) x += 8;
+  for (let i = 0; i < o; i++) s += unit(x + (i % 2) * (BU + 3), (BU * 10) - (Math.floor(i / 2) + 1) * (BU + 3) + 3);
+  if (o) x += 2 * (BU + 3);
+  const w = Math.max(x, 10);
+  return `<svg class="pv" viewBox="-2 -2 ${w + 4} ${BU * 10 + 4}" width="${Math.min(320, (w + 4) * 1.6)}">${s}</svg>`;
+}
+export { blocks };

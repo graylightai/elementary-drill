@@ -155,7 +155,7 @@ function renderChoice(item: Item, q: ChoiceQuestion): void {
           $('#feedback').append(h);
         }
         // 有網路才給影片（離線播不了）
-        const vids = navigator.onLine ? videosFor(item.cur) : [];
+        const vids = navigator.onLine ? videosFor(item) : [];
         vids.forEach(v => {
           const b = el('button', 'vid');
           b.type = 'button';

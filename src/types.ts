@@ -65,6 +65,7 @@ export interface Item {
   g: string;                 // 細項名稱，弱點診斷依這個分組
   subj: string;              // 屬於哪個科目（首頁那一格）
   cur: string[];             // 對應的 108 課綱學習內容代碼，例如 ['N-1-3']；課綱外內容為空陣列
+  vids?: string[];           // 指定講解影片（YouTube id，見 content/videos.ts）；沒指定就依課綱代碼
   make: () => Question;
 }
 
