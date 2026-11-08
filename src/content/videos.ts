@@ -40,6 +40,14 @@ const LIB: Record<string, string> = {
   'OuCseXFTbZc': '認識年、月、日和星期',
   '9Y8VSx0d9SY': '認識簡單平面圖形的特徵',
   'nN_ypaMi_cE': '認識簡單立體形體的特徵',
+  'M6MenPw4z5I': '三位數的加減估算',
+  '3__RmyOCDsk': '連加兩步驟問題及加法結合律',
+  '9TIsp5p-eQ0': '兩步驟的加減混合問題',
+  'ZSvWCYyxR7M': '先乘再加（或減）的兩步驟問題',
+  'dYaYLu-Dll0': '先加（或減）再乘的兩步驟問題',
+  'CPabaPZfwFc': '認識容量的意義與比較',
+  'OhP9M1q4fDU': '認識重量的意義與比較',
+  'dbFQX6sFO1Q': '認識面積的意義與比較',
 };
 export const VIDEO_IDS = Object.keys(LIB);
 

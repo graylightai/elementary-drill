@@ -192,3 +192,26 @@ describe('學習地圖', () => {
     expect(all.length).toBe(new Set(items().map(i => i.subj + '/' + i.g)).size);
   });
 });
+
+describe('二年級應用題的答案', () => {
+  const ans = (q: { choices: Choice[] }) => Number(String(q.choices.find(c => c.ok)!.t).replace(/[^0-9]/g, ''));
+  const nums = (s: string) => (s.match(/\d+/g) || []).map(Number);
+  it('兩步驟：照題目的數字一步一步算', () => {
+    for (let r = 0; r < 100; r++) {
+      const get = (k: string) => { const q = ALL[k].make(); if (q.kind) throw 0; return q; };
+      let q = get('two.addsub'); let [a, b, c] = nums(q.ask!); expect(ans(q), q.ask).toBe(a - b + c);
+      q = get('two.multadd'); [a, b, c] = nums(q.ask!); expect(ans(q), q.ask).toBe(q.ask!.includes('送') ? a * b + c : a * b - c);
+      q = get('two.addmult'); [a, b, c] = nums(q.ask!); expect(ans(q), q.ask).toBe((a + b) * c);
+      q = get('sum3'); expect(ans(q), q.big).toBe(nums(q.big!).reduce((x, y) => x + y, 0));
+    }
+  });
+  it('估算：答案是四捨五入到百位後再算', () => {
+    const r100 = (n: number) => Math.round(n / 100) * 100;
+    for (let r = 0; r < 100; r++) {
+      let q = ALL['est.add'].make(); if (q.kind) throw 0;
+      let [a, b] = nums(q.ask!); expect(ans(q), q.ask).toBe(r100(a) + r100(b));
+      q = ALL['est.sub'].make(); if (q.kind) throw 0;
+      [a, b] = nums(q.ask!); expect(ans(q), q.ask).toBe(a - r100(b));
+    }
+  });
+});
